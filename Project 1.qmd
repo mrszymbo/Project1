@@ -5,4 +5,49 @@ format: html
 editor: source
 ---
 
-# Part 1
+# Introduction
+
+yada yada yada
+
+# Part 1: Data Processing
+
+yada yada yada
+
+```{r}
+# attach packages 
+library(httr)
+library(jsonlite)
+library(tidyverse)
+```
+
+## Explore PUMS Census Api
+
+```{r}
+# establish API key
+
+api_key <- "9565ad3d32410ea2b7caa601ff9c5c4467f789d7"
+
+# try calling to API -- first call using example
+
+url <- paste0(
+  "https://api.census.gov/data/2024/acs/acs1/pums?",
+  "get=SEX,PWGTP,MAR&",
+  "for=state:*&",
+  "SCHL=24&",
+  "key=",
+  api_key
+)
+
+response <- GET(url)
+
+response
+
+# look at returned data
+
+content <- rawToChar(response$content)
+
+data <- fromJSON(info)
+
+data
+```
+
