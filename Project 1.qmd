@@ -22,12 +22,14 @@ library(tidyverse)
 
 ## Explore PUMS Census Api
 
+yada yada yada
+
 ```{r}
 # establish API key
 
 api_key <- "9565ad3d32410ea2b7caa601ff9c5c4467f789d7"
 
-# try calling to API -- first call using example
+# try calling to API using example
 
 url <- paste0(
   "https://api.census.gov/data/2024/acs/acs1/pums?",
@@ -42,12 +44,129 @@ response <- GET(url)
 
 response
 
+# convert response to text/character string & 
+# parse the JSON text into an R object
+data <- fromJSON(rawToChar(response$content))
+
 # look at returned data
+head(data)
 
-content <- rawToChar(response$content)
+# make the first row the column names, 
+# then remove the first row
+column_names <- data[1, ]
+data <- data[-1, ]
 
-data <- fromJSON(info)
+# convert to a tibble
+data <- as_tibble(data)
 
-data
+# make sure tibble has the correct column names
+names(data) <- column_names
+
+# check
+head(data)
+
+# use process to create a function & then test it
+
+query_api <- function(url) {
+  
+  response <- GET(url)
+  
+  data <- fromJSON(rawToChar(response$content))
+  
+  column_names <- data[1, ]
+  
+  data <- data[-1, ]
+  
+  data <- as_tibble(data)
+  
+  names(data) <- column_names
+  
+  return(data)
+}
+
+test <- query_api(url)
+
+test
+```
+
+yada yada yada
+
+## Parsing Variable Values
+
+yada yada yada
+
+```{r}
+# check 2024 PUMS variable data
+
+url_2024 <- "https://api.census.gov/data/2024/acs/acs1/pums/variables.json"
+
+info_2024 <- GET(url_2024)
+
+data_2024 <- fromJSON(rawToChar(info_2024$content))
+
+# inspect structure & variables 
+
+str(data_2024, max.level = 2)
+names(data_2024)
+names(data_2024$variables) [1:10]
+
+# create function & test it
+
+PUMS_var <- c("AGEP", "GASP", "GRPIP", "JWAP", "JWDP", "JWMNP", "PWGTP",
+  "FER", "HHL", "SCH", "SCHL", "SEX",
+  "REGION", "DIVISION")
+
+get_var <- function(year) {
+  
+  url <- paste0(
+    "https://api.census.gov/data/",
+    year,
+    "/acs/acs1/pums/variables.json"
+  )
+  
+  response <- GET(url)
+  
+  data <- fromJSON(rawToChar(response$content))
+  
+  # keep requested variables
+  var <- PUMS_var
+  if (year == 2021 | year == 2022) {
+    var <- c(var, "ST")
+  } else {
+    var <- c(var, "STATE")
+  }
+  
+  variables <- data$variables[var]
+  
+  return(variables)
+}
+
+test_2024 <- get_var(2024)
+
+test_2024
+names(test_2024)
+```
+
+works! so do on 2021-2023 data as well + yada yada
+
+```{r}
+data_2024 <- get_var(2024)
+names(data_2024)
+
+data_2023 <- get_var(2023)
+names(data_2023)
+
+data_2022 <- get_var(2022)
+names(data_2022)
+
+data_2021 <- get_var(2021)
+names(data_2021)
+
+# save as .rds in data folder
+
+saveRDS(data_2024, "data/data_2024.rds")
+saveRDS(data_2023, "data/data_2023.rds")
+saveRDS(data_2022, "data/data_2022.rds")
+saveRDS(data_2021, "data/data_2021.rds")
 ```
 
