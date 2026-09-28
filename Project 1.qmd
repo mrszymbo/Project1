@@ -170,3 +170,98 @@ saveRDS(data_2022, "data/data_2022.rds")
 saveRDS(data_2021, "data/data_2021.rds")
 ```
 
+## Parsing API Data
+
+yada yada 
+```{r}
+# create main parsing function 
+
+# first set up description and defaults 
+
+query_census <- function(
+    year = 2024,
+    numeric_vars = c("AGEP", "PWGTP"),
+    categorical_vars = "SEX",
+    geography = "State",
+    specific_geography = NULL
+) 
+  {
+  # check for valid year
+  if (!year %in% c(2021, 2022, 2023, 2024)) {
+    stop("year must be in 2021, 2022, 2023, or 2024")
+  }
+  
+  # specify numeric variables that can be returned
+  allowed_num <- c("AGEP", "GASP", "GRPIP", "JWAP", "JWDP", "JWMNP", "PWGTP")
+  
+  # check
+  if (!all(numeric_vars %in% allowed_num)) {
+    stop("Invalid numeric variable. Choose from AGEP, GASP, GRPIP, JWAP, JWDP, JWMNP, and PWGTP.")
+  }
+  
+  # make sure PWGTP is always returned 
+  if (!"PWGTP" %in% numeric_vars) {
+    stop("PWGTP must be included.")
+  }
+  
+  # make sure another numeric variable is returned 
+  if (length(numeric_vars) < 2) {
+    stop("numeric_vars must included PWGTP and at least one other numeric variable.")
+  }
+  
+  # specify categorical variables that can be returned 
+  allowed_cat <- c("FER", "HHL", "SCH", "SCHL", "SEX")
+  
+  # check
+  if (!all(categorical_vars %in% allowed_cat)) {
+    stop("Invalid categorical variable. Choose from FER, HHL, SCH. SCHL, and SEX.")
+  }
+  
+  # make sure at least one categorical variable is returned 
+  if (length(categorical_vars) < 1) {
+    stop("At least one categorical variable must be included.")
+  }
+  
+  # specify geography levels that can be returned 
+  allowed_geo <- c("Region", "Division", "State")
+  
+  # make sure only one level can be returned 
+  if (length(geography) != 1 || !geography %in% allowed_geo) {
+    stop("geography must be either Region, Division, or State.")
+  }
+  
+  # specify the specific geography that can be subset 
+  
+}
+
+# check this function
+
+query_census(year = 2002)
+
+query_census(numeric_vars = c("AGEP", "PWGTP")
+             )
+
+query_census(numeric_vars = c("BDSP", "PWGTP")
+             )
+
+query_census(numeric_vars = c("AGEP", "GASP")
+             )
+
+query_census(numeric_vars = "PWGTP")
+
+query_census(categorical_vars = "WAOB")
+
+query_census(
+  numeric_vars = c("GASP", "PWGTP"),
+  categorical_vars = c("FER", "SEX")
+)
+
+query_census(geography = "Region")
+
+query_census(geography = "All")
+
+query_census(geography = c("Region", "Division")
+             )
+```
+
+
