@@ -3,6 +3,10 @@ title: "Project 1"
 author: "Maya Szymborski"
 format: html
 editor: source
+execute:
+  error: true
+  warning: false
+  message: false
 ---
 
 # Introduction
@@ -20,7 +24,7 @@ library(jsonlite)
 library(tidyverse)
 ```
 
-## Explore PUMS Census Api
+## Explore PUMS Census API
 
 yada yada yada
 
@@ -31,7 +35,7 @@ api_key <- "9565ad3d32410ea2b7caa601ff9c5c4467f789d7"
 
 # try calling to API using example
 
-url <- paste0(
+url1 <- paste0(
   "https://api.census.gov/data/2024/acs/acs1/pums?",
   "get=SEX,PWGTP,MAR&",
   "for=state:*&",
@@ -65,16 +69,15 @@ names(data) <- column_names
 # check
 head(data)
 
-# use process to create a function & then test it
+# use process to create a helper function & then test it
 
 query_api <- function(url) {
   
-  response <- GET(url)
+  response <- GET(url1)
   
   data <- fromJSON(rawToChar(response$content))
   
   column_names <- data[1, ]
-  
   data <- data[-1, ]
   
   data <- as_tibble(data)
@@ -84,7 +87,7 @@ query_api <- function(url) {
   return(data)
 }
 
-test <- query_api(url)
+test <- query_api(url1)
 
 test
 ```
@@ -118,13 +121,13 @@ PUMS_var <- c("AGEP", "GASP", "GRPIP", "JWAP", "JWDP", "JWMNP", "PWGTP",
 
 get_var <- function(year) {
   
-  url <- paste0(
+  url1 <- paste0(
     "https://api.census.gov/data/",
     year,
     "/acs/acs1/pums/variables.json"
   )
   
-  response <- GET(url)
+  response <- GET(url1)
   
   data <- fromJSON(rawToChar(response$content))
   
@@ -143,7 +146,6 @@ get_var <- function(year) {
 
 test_2024 <- get_var(2024)
 
-test_2024
 names(test_2024)
 ```
 
@@ -152,6 +154,7 @@ works! so do on 2021-2023 data as well + yada yada
 ```{r}
 data_2024 <- get_var(2024)
 names(data_2024)
+
 
 data_2023 <- get_var(2023)
 names(data_2023)
@@ -183,7 +186,8 @@ query_census <- function(
     numeric_vars = c("AGEP", "PWGTP"),
     categorical_vars = "SEX",
     geography = "State",
-    specific_geography = NULL
+    specific_geography = NULL,
+    api_key
 ) 
   {
   # check for valid year
@@ -230,8 +234,72 @@ query_census <- function(
     stop("geography must be either Region, Division, or State.")
   }
   
-  # specify the specific geography that can be subset 
+  # specify the available geography that can be subset 
+  geo_values <- get_geo(year, geography)
   
+  # if no specific_geography, use North Carolina as default 
+  if(is.null(specific_geography)) {
+    specific_geography <- "North Carolina"
+  }
+  
+  # return error if user requests Puerto Rico
+  if (grepl("Puerto Rico", specific_geography, ignore.case = TRUE)) {
+    stop("Puerto Rico is not included in this function.")
+  }
+
+  # find Census code for selected geography
+  if (specific_geography == "all") {
+    geo_code <- NULL
+  } else {
+    geo_code <- names(
+    geo_values[grepl(
+      specific_geography,
+      geo_values,
+      fixed = TRUE
+    )]
+  )
+  }
+  
+  # make sure valid specific geography is returned 
+  if (length(geo_code) == 0 && specific_geography != "all") {
+    stop("Invalid specific_geography.")
+  }
+  
+  # create API query
+  get_variables <- paste(c(numeric_vars, categorical_vars),
+                         collapse = ","
+                         )
+  
+  if (specific_geography == "all") {
+    for_part <- paste0(
+      tolower(geography),
+      ":*"
+    )
+  } else {
+    for_part <- paste0(
+      tolower(geography),
+      ":",
+      geo_code
+    )
+  }
+  
+  # create API URL
+  url2 <- paste0(
+    "https://api.census.gov/data/",
+    year,
+    "/acs/acs1/pums?",
+    "get=",
+    get_variables,
+    "&for=",
+    for_part,
+    "&key=",
+    api_key
+  )
+  
+  # query API
+  data <- query_api(url2)
+  
+  return(data)
 }
 
 # check this function
@@ -262,6 +330,70 @@ query_census(geography = "All")
 
 query_census(geography = c("Region", "Division")
              )
+
+query_census(specific_geography = "Puerto Rico")
+
+query_census(specific_geography = "Cuba")
+
+test1 <- query_census(api_key = api_key)
+head(test1)
+
+test2 <- query_census(
+  specific_geography = "California",
+  api_key = api_key
+)
+head(test2)
+
+test3 <- query_census(
+  specific_geography = "all",
+  api_key = api_key
+)
+head(test3)
+```
+
+yada yada yada
+
+```{r}
+# make helper function to return available geography 
+
+# inspect for specific_geography
+data_2024$STATE$values
+data_2024$REGION$values
+data_2024$DIVISION$values
+
+state_values <- data_2024$STATE$values$item
+state_values
+names(state_values)
+unlist(state_values) # turn nested list into a simplified list
+
+get_geo <- function(year, geography) {
+  
+  # load variable values for selected year
+  var_data <- readRDS(
+    paste0(
+      "data/data_",
+      year,
+      ".rds"
+    )
+  )
+  
+  # get selected geography & match them
+  geo_data <- var_data[[toupper(geography)]] # converts to uppercase 
+  
+  # return geography codes and names
+  geo_val <- unlist(geo_data$values$item)
+  
+  # remove Puerto Rico using `!grepl` which means "does not contain"
+  geo_val <- geo_val[!grepl("Puerto Rico", geo_val)
+                     ]
+  
+  return(geo_val)
+}
+
+# test helper function
+get_geo(2024, "State")
+get_geo(2023, "Region")
+get_geo(2022, "Division")
 ```
 
 
