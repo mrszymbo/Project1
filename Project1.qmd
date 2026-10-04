@@ -1,7 +1,11 @@
 ---
 title: "Project 1"
 author: "Maya Szymborski"
-format: html
+format: 
+  html:
+    toc: true
+    toc-depth: 3
+    toc-location: right
 editor: source
 execute:
   error: true
@@ -45,7 +49,7 @@ url1 <- paste0(
   api_key
 )
 
-response <- GET(url)
+response <- GET(url1)
 
 response
 
@@ -201,8 +205,15 @@ get_geo <- function(year, geography) {
     )
   )
   
+  # use ST for 2021/2022 and STATE for 2023/2024
+  if (geography == "State" && year %in% c(2021, 2022)) {
+    geography <- "ST"
+  } else {
+    geography <- toupper(geography)
+  }
+  
   # get selected geography & match them
-  geo_data <- var_data[[toupper(geography)]] # converts to uppercase 
+  geo_data <- var_data[[geography]] 
   
   # return geography codes and names
   geo_val <- unlist(geo_data$values$item)
@@ -638,3 +649,89 @@ head(gen_test$SEX)
 
 yada yada yada
 
+## Combining Years
+
+```{r}
+# create function to specify multiple years of survey data
+
+query_census_years <- function(
+    years = c(2021, 2022, 2023, 2024),
+    numeric_vars = c("AGEP", "PWGTP"),
+    categorical_vars = "SEX",
+    geography = "State",
+    specific_geography = NULL,
+    api_key
+) {
+  
+  # check for valid years
+  if (!all(years %in% c(2021, 2022, 2023, 2024))) {
+    stop("years must be in 2021, 2022, 2023, or 2024")
+  }
+  
+  # make sure at least one year in specified 
+  if (length(years) < 1) {
+    stop("At least one year must be specified.")
+  }
+
+  # create a list to store each year's data
+  data_list <- list()
+
+  # query each year
+  for (i in seq_along(years)) {
+    data_list[[i]] <- query_census(
+      year = years[i],
+      numeric_vars = numeric_vars,
+      categorical_vars = categorical_vars,
+      geography = geography,
+      specific_geography = specific_geography,
+      api_key = api_key
+    )
+    
+    # add year variable
+    data_list[[i]]$year <- years[i]
+  }
+  
+  # combine all years into one tibble
+  data <- bind_rows(data_list)
+  
+  return(data)
+}
+```
+
+```{r}
+# test function
+
+combined_test <- query_census_years(
+  years = c(2022, 2024),
+  api_key = api_key
+)
+head(combined_test)
+table(combined_test$year)
+class(combined_test)
+
+combined_all_years <- query_census_years(
+  years = c(2021, 2022, 2023, 2024),
+  api_key = api_key
+)
+head(combined_all_years)
+table(combined_all_years$year)
+
+combined_test2 <- query_census_years(
+  years = c(2022, 2023, 2024),
+  numeric_vars = c("GASP", "PWGTP"),
+  categorical_vars = c("FER", "SEX"),
+  geography = "State",
+  specific_geography = "California",
+  api_key = api_key
+)
+head(combined_test2)
+
+combined_all_states <- query_census_years(
+  years = c(2023, 2024),
+  specific_geography = "all",
+  api_key = api_key
+)
+table(combined_all_states$year)
+```
+
+# Part 2: Writing a Generic Function for Summarizing

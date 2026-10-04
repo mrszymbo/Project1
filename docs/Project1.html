@@ -1,0 +1,3027 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Maya Szymborski">
+
+<title>Project 1</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-ba8f7c244c1f50cbf6c6a3aa3874339a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#part-1-data-processing" id="toc-part-1-data-processing" class="nav-link" data-scroll-target="#part-1-data-processing">Part 1: Data Processing</a>
+  <ul class="collapse">
+  <li><a href="#explore-pums-census-api" id="toc-explore-pums-census-api" class="nav-link" data-scroll-target="#explore-pums-census-api">Explore PUMS Census API</a></li>
+  <li><a href="#parsing-variable-values" id="toc-parsing-variable-values" class="nav-link" data-scroll-target="#parsing-variable-values">Parsing Variable Values</a></li>
+  <li><a href="#parsing-api-data" id="toc-parsing-api-data" class="nav-link" data-scroll-target="#parsing-api-data">Parsing API Data</a>
+  <ul class="collapse">
+  <li><a href="#helper-functions" id="toc-helper-functions" class="nav-link" data-scroll-target="#helper-functions">Helper Functions</a></li>
+  <li><a href="#main-function" id="toc-main-function" class="nav-link" data-scroll-target="#main-function">Main Function</a></li>
+  <li><a href="#function-tests" id="toc-function-tests" class="nav-link" data-scroll-target="#function-tests">Function Tests</a></li>
+  </ul></li>
+  <li><a href="#combining-years" id="toc-combining-years" class="nav-link" data-scroll-target="#combining-years">Combining Years</a></li>
+  </ul></li>
+  <li><a href="#part-2-writing-a-generic-function-for-summarizing" id="toc-part-2-writing-a-generic-function-for-summarizing" class="nav-link" data-scroll-target="#part-2-writing-a-generic-function-for-summarizing">Part 2: Writing a Generic Function for Summarizing</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Project 1</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Maya Szymborski </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>yada yada yada</p>
+</section>
+<section id="part-1-data-processing" class="level1">
+<h1>Part 1: Data Processing</h1>
+<p>yada yada yada</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># attach packages </span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(httr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jsonlite)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="explore-pums-census-api" class="level2">
+<h2 class="anchored" data-anchor-id="explore-pums-census-api">Explore PUMS Census API</h2>
+<p>yada yada yada</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># establish API key</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>api_key <span class="ot">&lt;-</span> <span class="st">"9565ad3d32410ea2b7caa601ff9c5c4467f789d7"</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># try calling to API using example</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>url1 <span class="ot">&lt;-</span> <span class="fu">paste0</span>(</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"https://api.census.gov/data/2024/acs/acs1/pums?"</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"get=SEX,PWGTP,MAR&amp;"</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"for=state:*&amp;"</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">"SCHL=24&amp;"</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">"key="</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  api_key</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>response <span class="ot">&lt;-</span> <span class="fu">GET</span>(url1)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>response</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Response [https://api.census.gov/data/2024/acs/acs1/pums?get=SEX,PWGTP,MAR&amp;for=state:*&amp;SCHL=24&amp;key=9565ad3d32410ea2b7caa601ff9c5c4467f789d7]
+  Date: 2026-10-04 20:32
+  Status: 200
+  Content-Type: application/json;charset=utf-8
+  Size: 1.25 MB
+[["SEX","PWGTP","MAR","SCHL","state"],
+["2","17","1","24","06"],
+["1","58","3","24","39"],
+["2","72","2","24","51"],
+["2","13","1","24","12"],
+["2","37","5","24","27"],
+["2","47","5","24","34"],
+["1","10","3","24","48"],
+["1","24","5","24","17"],
+["2","153","4","24","42"],
+...</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># convert response to text/character string &amp; </span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># parse the JSON text into an R object</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="fu">rawToChar</span>(response<span class="sc">$</span>content))</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># look at returned data</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1]  [,2]    [,3]  [,4]   [,5]   
+[1,] "SEX" "PWGTP" "MAR" "SCHL" "state"
+[2,] "2"   "17"    "1"   "24"   "06"   
+[3,] "1"   "58"    "3"   "24"   "39"   
+[4,] "2"   "72"    "2"   "24"   "51"   
+[5,] "2"   "13"    "1"   "24"   "12"   
+[6,] "2"   "37"    "5"   "24"   "27"   </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># make the first row the column names, </span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># then remove the first row</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>column_names <span class="ot">&lt;-</span> data[<span class="dv">1</span>, ]</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data[<span class="sc">-</span><span class="dv">1</span>, ]</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># convert to a tibble</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(data)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># make sure tibble has the correct column names</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data) <span class="ot">&lt;-</span> column_names</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co"># check</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 5
+  SEX   PWGTP MAR   SCHL  state
+  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+1 2     17    1     24    06   
+2 1     58    3     24    39   
+3 2     72    2     24    51   
+4 2     13    1     24    12   
+5 2     37    5     24    27   
+6 2     47    5     24    34   </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># use process to create a helper function &amp; then test it</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>query_api <span class="ot">&lt;-</span> <span class="cf">function</span>(url) {</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  response <span class="ot">&lt;-</span> <span class="fu">GET</span>(url)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="fu">rawToChar</span>(response<span class="sc">$</span>content))</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  column_names <span class="ot">&lt;-</span> data[<span class="dv">1</span>, ]</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> data[<span class="sc">-</span><span class="dv">1</span>, ]</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(data)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(data) <span class="ot">&lt;-</span> column_names</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">query_api</span>(url1)</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>test</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 47,486 × 5
+   SEX   PWGTP MAR   SCHL  state
+   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+ 1 2     17    1     24    06   
+ 2 1     58    3     24    39   
+ 3 2     72    2     24    51   
+ 4 2     13    1     24    12   
+ 5 2     37    5     24    27   
+ 6 2     47    5     24    34   
+ 7 1     10    3     24    48   
+ 8 1     24    5     24    17   
+ 9 2     153   4     24    42   
+10 2     46    1     24    25   
+# ℹ 47,476 more rows</code></pre>
+</div>
+</div>
+<p>yada yada yada</p>
+</section>
+<section id="parsing-variable-values" class="level2">
+<h2 class="anchored" data-anchor-id="parsing-variable-values">Parsing Variable Values</h2>
+<p>yada yada yada</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check 2024 PUMS variable data</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>url_2024 <span class="ot">&lt;-</span> <span class="st">"https://api.census.gov/data/2024/acs/acs1/pums/variables.json"</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>info_2024 <span class="ot">&lt;-</span> <span class="fu">GET</span>(url_2024)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>data_2024 <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="fu">rawToChar</span>(info_2024<span class="sc">$</span>content))</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co"># inspect structure &amp; variables </span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(data_2024, <span class="at">max.level =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>List of 1
+ $ variables:List of 524
+  ..$ for        :List of 6
+  ..$ in         :List of 6
+  ..$ ucgid      :List of 6
+  ..$ HHLANP     :List of 6
+  ..$ FBATHP     :List of 6
+  ..$ DRIVESP    :List of 6
+  ..$ WGTP23     :List of 6
+  ..$ WGTP22     :List of 6
+  ..$ WGTP25     :List of 6
+  ..$ WGTP24     :List of 6
+  ..$ RACNH      :List of 6
+  ..$ WGTP21     :List of 6
+  ..$ FWATP      :List of 6
+  ..$ WGTP20     :List of 6
+  ..$ WGTP27     :List of 6
+  ..$ WGTP26     :List of 6
+  ..$ WGTP29     :List of 6
+  ..$ WGTP28     :List of 6
+  ..$ FBROADBNDP :List of 6
+  ..$ FDRATXP    :List of 6
+  ..$ FWKWNP     :List of 6
+  ..$ HOTWAT     :List of 6
+  ..$ FWKHP      :List of 6
+  ..$ FFULP      :List of 6
+  ..$ WORKSTAT   :List of 6
+  ..$ FRACP      :List of 6
+  ..$ FJWDP      :List of 6
+  ..$ WGTP34     :List of 6
+  ..$ WGTP33     :List of 6
+  ..$ WGTP36     :List of 6
+  ..$ PINCP      :List of 6
+  ..$ WGTP35     :List of 6
+  ..$ FPOBP      :List of 6
+  ..$ WGTP30     :List of 6
+  ..$ WGTP32     :List of 6
+  ..$ STOV       :List of 6
+  ..$ FMHP       :List of 6
+  ..$ WGTP31     :List of 6
+  ..$ RACAIAN    :List of 6
+  ..$ WGTP38     :List of 6
+  ..$ WGTP37     :List of 6
+  ..$ WGTP39     :List of 6
+  ..$ PUBCOV     :List of 6
+  ..$ SRNT       :List of 6
+  ..$ SEX        :List of 6
+  ..$ WGTP45     :List of 6
+  ..$ WGTP44     :List of 6
+  ..$ WGTP47     :List of 6
+  ..$ DOUT       :List of 6
+  ..$ FACCESSP   :List of 6
+  ..$ WGTP46     :List of 6
+  ..$ WGTP41     :List of 6
+  ..$ WGTP40     :List of 6
+  ..$ OTHSVCEX   :List of 6
+  ..$ WGTP43     :List of 6
+  ..$ WGTP42     :List of 6
+  ..$ RACPI      :List of 6
+  ..$ INDP       :List of 6
+  ..$ WGTP49     :List of 6
+  ..$ WGTP48     :List of 6
+  ..$ PRIVCOV    :List of 6
+  ..$ SFN        :List of 6
+  ..$ FINTP      :List of 6
+  ..$ HUPAC      :List of 6
+  ..$ SFR        :List of 6
+  ..$ WGTP50     :List of 6
+  ..$ FBLDP      :List of 6
+  ..$ WGTP56     :List of 6
+  ..$ WGTP55     :List of 6
+  ..$ WGTP58     :List of 6
+  ..$ WGTP57     :List of 6
+  ..$ WGTP52     :List of 6
+  ..$ WGTP51     :List of 6
+  ..$ DEAR       :List of 6
+  ..$ WGTP54     :List of 6
+  ..$ DIS        :List of 6
+  ..$ WGTP53     :List of 6
+  ..$ ACR        :List of 6
+  ..$ VACS       :List of 6
+  ..$ FINSP      :List of 6
+  ..$ WGTP59     :List of 6
+  ..$ FMILPP     :List of 6
+  ..$ ADJHSG     :List of 6
+  ..$ MARHYP     :List of 6
+  ..$ PAP        :List of 6
+  ..$ WGTP7      :List of 6
+  ..$ PWGTP30    :List of 6
+  ..$ WGTP6      :List of 6
+  ..$ PWGTP31    :List of 6
+  ..$ WGTP5      :List of 6
+  ..$ HINCP      :List of 6
+  ..$ PWGTP32    :List of 6
+  ..$ WKWN       :List of 6
+  ..$ WGTP4      :List of 6
+  ..$ PWGTP33    :List of 6
+  ..$ PWGTP34    :List of 6
+  ..$ PWGTP35    :List of 6
+  ..$ WGTP9      :List of 6
+  ..$ PWGTP36    :List of 6
+  .. [list output truncated]</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data_2024)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "variables"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data_2024<span class="sc">$</span>variables) [<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "for"     "in"      "ucgid"   "HHLANP"  "FBATHP"  "DRIVESP" "WGTP23" 
+ [8] "WGTP22"  "WGTP25"  "WGTP24" </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create function &amp; test it</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>PUMS_var <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"AGEP"</span>, <span class="st">"GASP"</span>, <span class="st">"GRPIP"</span>, <span class="st">"JWAP"</span>, <span class="st">"JWDP"</span>, <span class="st">"JWMNP"</span>, <span class="st">"PWGTP"</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"FER"</span>, <span class="st">"HHL"</span>, <span class="st">"SCH"</span>, <span class="st">"SCHL"</span>, <span class="st">"SEX"</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"REGION"</span>, <span class="st">"DIVISION"</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>get_var <span class="ot">&lt;-</span> <span class="cf">function</span>(year) {</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  url1 <span class="ot">&lt;-</span> <span class="fu">paste0</span>(</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://api.census.gov/data/"</span>,</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    year,</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"/acs/acs1/pums/variables.json"</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  response <span class="ot">&lt;-</span> <span class="fu">GET</span>(url1)</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="fu">rawToChar</span>(response<span class="sc">$</span>content))</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># keep requested variables</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>  var <span class="ot">&lt;-</span> PUMS_var</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (year <span class="sc">==</span> <span class="dv">2021</span> <span class="sc">|</span> year <span class="sc">==</span> <span class="dv">2022</span>) {</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>    var <span class="ot">&lt;-</span> <span class="fu">c</span>(var, <span class="st">"ST"</span>)</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>    var <span class="ot">&lt;-</span> <span class="fu">c</span>(var, <span class="st">"STATE"</span>)</span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>  variables <span class="ot">&lt;-</span> data<span class="sc">$</span>variables[var]</span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(variables)</span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>test_2024 <span class="ot">&lt;-</span> <span class="fu">get_var</span>(<span class="dv">2024</span>)</span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(test_2024)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "AGEP"     "GASP"     "GRPIP"    "JWAP"     "JWDP"     "JWMNP"   
+ [7] "PWGTP"    "FER"      "HHL"      "SCH"      "SCHL"     "SEX"     
+[13] "REGION"   "DIVISION" "STATE"   </code></pre>
+</div>
+</div>
+<p>works! so do on 2021-2023 data as well + yada yada</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>data_2024 <span class="ot">&lt;-</span> <span class="fu">get_var</span>(<span class="dv">2024</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data_2024)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "AGEP"     "GASP"     "GRPIP"    "JWAP"     "JWDP"     "JWMNP"   
+ [7] "PWGTP"    "FER"      "HHL"      "SCH"      "SCHL"     "SEX"     
+[13] "REGION"   "DIVISION" "STATE"   </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>data_2023 <span class="ot">&lt;-</span> <span class="fu">get_var</span>(<span class="dv">2023</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data_2023)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "AGEP"     "GASP"     "GRPIP"    "JWAP"     "JWDP"     "JWMNP"   
+ [7] "PWGTP"    "FER"      "HHL"      "SCH"      "SCHL"     "SEX"     
+[13] "REGION"   "DIVISION" "STATE"   </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>data_2022 <span class="ot">&lt;-</span> <span class="fu">get_var</span>(<span class="dv">2022</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data_2022)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "AGEP"     "GASP"     "GRPIP"    "JWAP"     "JWDP"     "JWMNP"   
+ [7] "PWGTP"    "FER"      "HHL"      "SCH"      "SCHL"     "SEX"     
+[13] "REGION"   "DIVISION" "ST"      </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>data_2021 <span class="ot">&lt;-</span> <span class="fu">get_var</span>(<span class="dv">2021</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data_2021)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "AGEP"     "GASP"     "GRPIP"    "JWAP"     "JWDP"     "JWMNP"   
+ [7] "PWGTP"    "FER"      "HHL"      "SCH"      "SCHL"     "SEX"     
+[13] "REGION"   "DIVISION" "ST"      </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># save as .rds in data folder</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(data_2024, <span class="st">"data/data_2024.rds"</span>)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(data_2023, <span class="st">"data/data_2023.rds"</span>)</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(data_2022, <span class="st">"data/data_2022.rds"</span>)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(data_2021, <span class="st">"data/data_2021.rds"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="parsing-api-data" class="level2">
+<h2 class="anchored" data-anchor-id="parsing-api-data">Parsing API Data</h2>
+<section id="helper-functions" class="level3">
+<h3 class="anchored" data-anchor-id="helper-functions">Helper Functions</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># make helper function to return available geography </span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co"># inspect for specific_geography</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>data_2024<span class="sc">$</span>STATE<span class="sc">$</span>values</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$item
+$item$`47`
+[1] "Tennessee/TN"
+
+$item$`04`
+[1] "Arizona/AZ"
+
+$item$`05`
+[1] "Arkansas/AR"
+
+$item$`49`
+[1] "Utah/UT"
+
+$item$`09`
+[1] "Connecticut/CT"
+
+$item$`50`
+[1] "Vermont/VT"
+
+$item$`28`
+[1] "Mississippi/MS"
+
+$item$`37`
+[1] "North Carolina/NC"
+
+$item$`42`
+[1] "Pennsylvania/PA"
+
+$item$`45`
+[1] "South Carolina/SC"
+
+$item$`51`
+[1] "Virginia/VA"
+
+$item$`15`
+[1] "Hawaii/HI"
+
+$item$`25`
+[1] "Massachusetts/MA"
+
+$item$`72`
+[1] "Puerto Rico/PR"
+
+$item$`30`
+[1] "Montana/MT"
+
+$item$`33`
+[1] "New Hampshire/NH"
+
+$item$`35`
+[1] "New Mexico/NM"
+
+$item$`12`
+[1] "Florida/FL"
+
+$item$`48`
+[1] "Texas/TX"
+
+$item$`53`
+[1] "Washington/WA"
+
+$item$`13`
+[1] "Georgia/GA"
+
+$item$`18`
+[1] "Indiana/IN"
+
+$item$`20`
+[1] "Kansas/KS"
+
+$item$`26`
+[1] "Michigan/MI"
+
+$item$`32`
+[1] "Nevada/NV"
+
+$item$`54`
+[1] "West Virginia/WV"
+
+$item$`55`
+[1] "Wisconsin/WI"
+
+$item$`27`
+[1] "Minnesota/MN"
+
+$item$`16`
+[1] "Idaho/ID"
+
+$item$`19`
+[1] "Iowa/IA"
+
+$item$`22`
+[1] "Louisiana/LA"
+
+$item$`38`
+[1] "North Dakota/ND"
+
+$item$`01`
+[1] "Alabama/AL"
+
+$item$`02`
+[1] "Alaska/AK"
+
+$item$`06`
+[1] "California/CA"
+
+$item$`08`
+[1] "Colorado/CO"
+
+$item$`11`
+[1] "District of Columbia/DC"
+
+$item$`23`
+[1] "Maine/ME"
+
+$item$`34`
+[1] "New Jersey/NJ"
+
+$item$`39`
+[1] "Ohio/OH"
+
+$item$`10`
+[1] "Delaware/DE"
+
+$item$`56`
+[1] "Wyoming/WY"
+
+$item$`21`
+[1] "Kentucky/KY"
+
+$item$`24`
+[1] "Maryland/MD"
+
+$item$`44`
+[1] "Rhode Island/RI"
+
+$item$`46`
+[1] "South Dakota/SD"
+
+$item$`17`
+[1] "Illinois/IL"
+
+$item$`29`
+[1] "Missouri/MO"
+
+$item$`31`
+[1] "Nebraska/NE"
+
+$item$`36`
+[1] "New York/NY"
+
+$item$`40`
+[1] "Oklahoma/OK"
+
+$item$`41`
+[1] "Oregon/OR"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>data_2024<span class="sc">$</span>REGION<span class="sc">$</span>values</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$item
+$item$`1`
+[1] "Northeast"
+
+$item$`9`
+[1] "Puerto Rico"
+
+$item$`3`
+[1] "South"
+
+$item$`4`
+[1] "West"
+
+$item$`2`
+[1] "Midwest"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>data_2024<span class="sc">$</span>DIVISION<span class="sc">$</span>values</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$item
+$item$`7`
+[1] "West South Central (South Region)"
+
+$item$`2`
+[1] "Middle Atlantic (Northeast region)"
+
+$item$`4`
+[1] "West North Central (Midwest region)"
+
+$item$`6`
+[1] "East South Central (South region)"
+
+$item$`3`
+[1] "East North Central (Midwest region)"
+
+$item$`9`
+[1] "Pacific (West region)"
+
+$item$`0`
+[1] "Puerto Rico"
+
+$item$`5`
+[1] "South Atlantic (South region)"
+
+$item$`8`
+[1] "Mountain (West region)"
+
+$item$`1`
+[1] "New England (Northeast region)"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>state_values <span class="ot">&lt;-</span> data_2024<span class="sc">$</span>STATE<span class="sc">$</span>values<span class="sc">$</span>item</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>state_values</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$`47`
+[1] "Tennessee/TN"
+
+$`04`
+[1] "Arizona/AZ"
+
+$`05`
+[1] "Arkansas/AR"
+
+$`49`
+[1] "Utah/UT"
+
+$`09`
+[1] "Connecticut/CT"
+
+$`50`
+[1] "Vermont/VT"
+
+$`28`
+[1] "Mississippi/MS"
+
+$`37`
+[1] "North Carolina/NC"
+
+$`42`
+[1] "Pennsylvania/PA"
+
+$`45`
+[1] "South Carolina/SC"
+
+$`51`
+[1] "Virginia/VA"
+
+$`15`
+[1] "Hawaii/HI"
+
+$`25`
+[1] "Massachusetts/MA"
+
+$`72`
+[1] "Puerto Rico/PR"
+
+$`30`
+[1] "Montana/MT"
+
+$`33`
+[1] "New Hampshire/NH"
+
+$`35`
+[1] "New Mexico/NM"
+
+$`12`
+[1] "Florida/FL"
+
+$`48`
+[1] "Texas/TX"
+
+$`53`
+[1] "Washington/WA"
+
+$`13`
+[1] "Georgia/GA"
+
+$`18`
+[1] "Indiana/IN"
+
+$`20`
+[1] "Kansas/KS"
+
+$`26`
+[1] "Michigan/MI"
+
+$`32`
+[1] "Nevada/NV"
+
+$`54`
+[1] "West Virginia/WV"
+
+$`55`
+[1] "Wisconsin/WI"
+
+$`27`
+[1] "Minnesota/MN"
+
+$`16`
+[1] "Idaho/ID"
+
+$`19`
+[1] "Iowa/IA"
+
+$`22`
+[1] "Louisiana/LA"
+
+$`38`
+[1] "North Dakota/ND"
+
+$`01`
+[1] "Alabama/AL"
+
+$`02`
+[1] "Alaska/AK"
+
+$`06`
+[1] "California/CA"
+
+$`08`
+[1] "Colorado/CO"
+
+$`11`
+[1] "District of Columbia/DC"
+
+$`23`
+[1] "Maine/ME"
+
+$`34`
+[1] "New Jersey/NJ"
+
+$`39`
+[1] "Ohio/OH"
+
+$`10`
+[1] "Delaware/DE"
+
+$`56`
+[1] "Wyoming/WY"
+
+$`21`
+[1] "Kentucky/KY"
+
+$`24`
+[1] "Maryland/MD"
+
+$`44`
+[1] "Rhode Island/RI"
+
+$`46`
+[1] "South Dakota/SD"
+
+$`17`
+[1] "Illinois/IL"
+
+$`29`
+[1] "Missouri/MO"
+
+$`31`
+[1] "Nebraska/NE"
+
+$`36`
+[1] "New York/NY"
+
+$`40`
+[1] "Oklahoma/OK"
+
+$`41`
+[1] "Oregon/OR"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(state_values)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "47" "04" "05" "49" "09" "50" "28" "37" "42" "45" "51" "15" "25" "72" "30"
+[16] "33" "35" "12" "48" "53" "13" "18" "20" "26" "32" "54" "55" "27" "16" "19"
+[31] "22" "38" "01" "02" "06" "08" "11" "23" "34" "39" "10" "56" "21" "24" "44"
+[46] "46" "17" "29" "31" "36" "40" "41"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unlist</span>(state_values) <span class="co"># turn nested list into a simplified list</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                       47                        04                        05 
+           "Tennessee/TN"              "Arizona/AZ"             "Arkansas/AR" 
+                       49                        09                        50 
+                "Utah/UT"          "Connecticut/CT"              "Vermont/VT" 
+                       28                        37                        42 
+         "Mississippi/MS"       "North Carolina/NC"         "Pennsylvania/PA" 
+                       45                        51                        15 
+      "South Carolina/SC"             "Virginia/VA"               "Hawaii/HI" 
+                       25                        72                        30 
+       "Massachusetts/MA"          "Puerto Rico/PR"              "Montana/MT" 
+                       33                        35                        12 
+       "New Hampshire/NH"           "New Mexico/NM"              "Florida/FL" 
+                       48                        53                        13 
+               "Texas/TX"           "Washington/WA"              "Georgia/GA" 
+                       18                        20                        26 
+             "Indiana/IN"               "Kansas/KS"             "Michigan/MI" 
+                       32                        54                        55 
+              "Nevada/NV"        "West Virginia/WV"            "Wisconsin/WI" 
+                       27                        16                        19 
+           "Minnesota/MN"                "Idaho/ID"                 "Iowa/IA" 
+                       22                        38                        01 
+           "Louisiana/LA"         "North Dakota/ND"              "Alabama/AL" 
+                       02                        06                        08 
+              "Alaska/AK"           "California/CA"             "Colorado/CO" 
+                       11                        23                        34 
+"District of Columbia/DC"                "Maine/ME"           "New Jersey/NJ" 
+                       39                        10                        56 
+                "Ohio/OH"             "Delaware/DE"              "Wyoming/WY" 
+                       21                        24                        44 
+            "Kentucky/KY"             "Maryland/MD"         "Rhode Island/RI" 
+                       46                        17                        29 
+        "South Dakota/SD"             "Illinois/IL"             "Missouri/MO" 
+                       31                        36                        40 
+            "Nebraska/NE"             "New York/NY"             "Oklahoma/OK" 
+                       41 
+              "Oregon/OR" </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>get_geo <span class="ot">&lt;-</span> <span class="cf">function</span>(year, geography) {</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># load variable values for selected year</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  var_data <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste0</span>(</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>      <span class="st">"data/data_"</span>,</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>      year,</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>      <span class="st">".rds"</span></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># use ST for 2021/2022 and STATE for 2023/2024</span></span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (geography <span class="sc">==</span> <span class="st">"State"</span> <span class="sc">&amp;&amp;</span> year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2021</span>, <span class="dv">2022</span>)) {</span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>    geography <span class="ot">&lt;-</span> <span class="st">"ST"</span></span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>    geography <span class="ot">&lt;-</span> <span class="fu">toupper</span>(geography)</span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># get selected geography &amp; match them</span></span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a>  geo_data <span class="ot">&lt;-</span> var_data[[geography]] </span>
+<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return geography codes and names</span></span>
+<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a>  geo_val <span class="ot">&lt;-</span> <span class="fu">unlist</span>(geo_data<span class="sc">$</span>values<span class="sc">$</span>item)</span>
+<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove Puerto Rico using `!grepl` which means "does not contain"</span></span>
+<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a>  geo_val <span class="ot">&lt;-</span> geo_val[<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"Puerto Rico"</span>, geo_val)</span>
+<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a>                     ]</span>
+<span id="cb39-28"><a href="#cb39-28" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-29"><a href="#cb39-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(geo_val)</span>
+<span id="cb39-30"><a href="#cb39-30" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb39-31"><a href="#cb39-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-32"><a href="#cb39-32" aria-hidden="true" tabindex="-1"></a><span class="co"># test helper function</span></span>
+<span id="cb39-33"><a href="#cb39-33" aria-hidden="true" tabindex="-1"></a><span class="fu">get_geo</span>(<span class="dv">2024</span>, <span class="st">"State"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                       47                        04                        05 
+           "Tennessee/TN"              "Arizona/AZ"             "Arkansas/AR" 
+                       49                        09                        50 
+                "Utah/UT"          "Connecticut/CT"              "Vermont/VT" 
+                       28                        37                        42 
+         "Mississippi/MS"       "North Carolina/NC"         "Pennsylvania/PA" 
+                       45                        51                        15 
+      "South Carolina/SC"             "Virginia/VA"               "Hawaii/HI" 
+                       25                        30                        33 
+       "Massachusetts/MA"              "Montana/MT"        "New Hampshire/NH" 
+                       35                        12                        48 
+          "New Mexico/NM"              "Florida/FL"                "Texas/TX" 
+                       53                        13                        18 
+          "Washington/WA"              "Georgia/GA"              "Indiana/IN" 
+                       20                        26                        32 
+              "Kansas/KS"             "Michigan/MI"               "Nevada/NV" 
+                       54                        55                        27 
+       "West Virginia/WV"            "Wisconsin/WI"            "Minnesota/MN" 
+                       16                        19                        22 
+               "Idaho/ID"                 "Iowa/IA"            "Louisiana/LA" 
+                       38                        01                        02 
+        "North Dakota/ND"              "Alabama/AL"               "Alaska/AK" 
+                       06                        08                        11 
+          "California/CA"             "Colorado/CO" "District of Columbia/DC" 
+                       23                        34                        39 
+               "Maine/ME"           "New Jersey/NJ"                 "Ohio/OH" 
+                       10                        56                        21 
+            "Delaware/DE"              "Wyoming/WY"             "Kentucky/KY" 
+                       24                        44                        46 
+            "Maryland/MD"         "Rhode Island/RI"         "South Dakota/SD" 
+                       17                        29                        31 
+            "Illinois/IL"             "Missouri/MO"             "Nebraska/NE" 
+                       36                        40                        41 
+            "New York/NY"             "Oklahoma/OK"               "Oregon/OR" </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_geo</span>(<span class="dv">2023</span>, <span class="st">"Region"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          1           3           4           2 
+"Northeast"     "South"      "West"   "Midwest" </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_geo</span>(<span class="dv">2022</span>, <span class="st">"Division"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                    7                                     2 
+  "West South Central (South Region)"  "Middle Atlantic (Northeast region)" 
+                                    4                                     6 
+"West North Central (Midwest region)"   "East South Central (South region)" 
+                                    3                                     9 
+"East North Central (Midwest region)"               "Pacific (West region)" 
+                                    5                                     8 
+      "South Atlantic (South region)"              "Mountain (West region)" 
+                                    1 
+     "New England (Northeast region)" </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># make helper function that parses the time strings to return midpoint as time value</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>parse_time <span class="ot">&lt;-</span> <span class="cf">function</span>(x, time_values) {</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># convert values to character to match metadata names</span></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">as.character</span>(x)</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return missing time values as NA</span></span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>  x[x <span class="sc">==</span> <span class="st">"0"</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># add leading 0's so codes match Census metadata</span></span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(</span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">is.na</span>(x), </span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a>    <span class="cn">NA</span>, </span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">"%03d"</span>, <span class="fu">as.numeric</span>(x)</span>
+<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb45-18"><a href="#cb45-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb45-19"><a href="#cb45-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># get time interval for each code</span></span>
+<span id="cb45-20"><a href="#cb45-20" aria-hidden="true" tabindex="-1"></a>  intervals <span class="ot">&lt;-</span> <span class="fu">unname</span>(time_values[x])</span>
+<span id="cb45-21"><a href="#cb45-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb45-22"><a href="#cb45-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># extract beginning and ending times</span></span>
+<span id="cb45-23"><a href="#cb45-23" aria-hidden="true" tabindex="-1"></a>  start <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">" to .*"</span>, <span class="st">""</span>, intervals)</span>
+<span id="cb45-24"><a href="#cb45-24" aria-hidden="true" tabindex="-1"></a>  end <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">".* to "</span>, <span class="st">""</span>, intervals)</span>
+<span id="cb45-25"><a href="#cb45-25" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb45-26"><a href="#cb45-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># change Census AM/PM to standard AM/PM</span></span>
+<span id="cb45-27"><a href="#cb45-27" aria-hidden="true" tabindex="-1"></a>  start <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"a</span><span class="sc">\\</span><span class="st">.m</span><span class="sc">\\</span><span class="st">."</span>, <span class="st">"AM"</span>, start)</span>
+<span id="cb45-28"><a href="#cb45-28" aria-hidden="true" tabindex="-1"></a>  start <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"p</span><span class="sc">\\</span><span class="st">.m</span><span class="sc">\\</span><span class="st">."</span>, <span class="st">"PM"</span>, start)</span>
+<span id="cb45-29"><a href="#cb45-29" aria-hidden="true" tabindex="-1"></a>  end <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"a</span><span class="sc">\\</span><span class="st">.m</span><span class="sc">\\</span><span class="st">."</span>, <span class="st">"AM"</span>, end)</span>
+<span id="cb45-30"><a href="#cb45-30" aria-hidden="true" tabindex="-1"></a>  end <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"p</span><span class="sc">\\</span><span class="st">.m</span><span class="sc">\\</span><span class="st">."</span>, <span class="st">"PM"</span>, end)</span>
+<span id="cb45-31"><a href="#cb45-31" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb45-32"><a href="#cb45-32" aria-hidden="true" tabindex="-1"></a>  <span class="co"># convert times to POSIXct</span></span>
+<span id="cb45-33"><a href="#cb45-33" aria-hidden="true" tabindex="-1"></a>  start_time <span class="ot">&lt;-</span> <span class="fu">strptime</span>(start, <span class="at">format =</span> <span class="st">"%I:%M %p"</span>)</span>
+<span id="cb45-34"><a href="#cb45-34" aria-hidden="true" tabindex="-1"></a>  end_time <span class="ot">&lt;-</span> <span class="fu">strptime</span>(end, <span class="at">format =</span> <span class="st">"%I:%M %p"</span>)</span>
+<span id="cb45-35"><a href="#cb45-35" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb45-36"><a href="#cb45-36" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate midpoint of each interval</span></span>
+<span id="cb45-37"><a href="#cb45-37" aria-hidden="true" tabindex="-1"></a>  midpoint <span class="ot">&lt;-</span> start_time <span class="sc">+</span> (end_time <span class="sc">-</span> start_time) <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb45-38"><a href="#cb45-38" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb45-39"><a href="#cb45-39" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return only time of day</span></span>
+<span id="cb45-40"><a href="#cb45-40" aria-hidden="true" tabindex="-1"></a>  midpoint <span class="ot">&lt;-</span> hms<span class="sc">::</span><span class="fu">as_hms</span>(midpoint)</span>
+<span id="cb45-41"><a href="#cb45-41" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb45-42"><a href="#cb45-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(midpoint)</span>
+<span id="cb45-43"><a href="#cb45-43" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># JWAP metadata</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"https://api.census.gov/data/2024/acs/acs1/pums/variables/JWAP.json"</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>response <span class="ot">&lt;-</span> <span class="fu">GET</span>(url)</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a><span class="fu">fromJSON</span>(<span class="fu">rawToChar</span>(response<span class="sc">$</span>content))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$name
+[1] "JWAP"
+
+$label
+[1] "Time of arrival at work - hour and minute"
+
+$predicateType
+[1] "int"
+
+$group
+[1] "N/A"
+
+$limit
+[1] 0
+
+$`suggested-weight`
+[1] "PWGTP"
+
+$values
+$values$item
+$values$item$`122`
+[1] "10:20 a.m. to 10:24 a.m."
+
+$values$item$`258`
+[1] "9:40 p.m. to 9:44 p.m."
+
+$values$item$`260`
+[1] "9:50 p.m. to 9:54 p.m."
+
+$values$item$`261`
+[1] "9:55 p.m. to 9:59 p.m."
+
+$values$item$`142`
+[1] "12:00 p.m. to 12:04 p.m."
+
+$values$item$`146`
+[1] "12:20 p.m. to 12:24 p.m."
+
+$values$item$`274`
+[1] "11:00 p.m. to 11:04 p.m."
+
+$values$item$`163`
+[1] "1:45 p.m. to 1:49 p.m."
+
+$values$item$`165`
+[1] "1:55 p.m. to 1:59 p.m."
+
+$values$item$`048`
+[1] "4:10 a.m. to 4:14 a.m."
+
+$values$item$`171`
+[1] "2:25 p.m. to 2:29 p.m."
+
+$values$item$`058`
+[1] "5:00 a.m. to 5:04 a.m."
+
+$values$item$`184`
+[1] "3:30 p.m. to 3:34 p.m."
+
+$values$item$`189`
+[1] "3:55 p.m. to 3:59 p.m."
+
+$values$item$`192`
+[1] "4:10 p.m. to 4:14 p.m."
+
+$values$item$`076`
+[1] "6:30 a.m. to 6:34 a.m."
+
+$values$item$`198`
+[1] "4:40 p.m. to 4:44 p.m."
+
+$values$item$`091`
+[1] "7:45 a.m. to 7:49 a.m."
+
+$values$item$`094`
+[1] "8:00 a.m. to 8:04 a.m."
+
+$values$item$`210`
+[1] "5:40 p.m. to 5:44 p.m."
+
+$values$item$`218`
+[1] "6:20 p.m. to 6:24 p.m."
+
+$values$item$`220`
+[1] "6:30 p.m. to 6:34 p.m."
+
+$values$item$`221`
+[1] "6:35 p.m. to 6:39 p.m."
+
+$values$item$`222`
+[1] "6:40 p.m. to 6:44 p.m."
+
+$values$item$`224`
+[1] "6:50 p.m. to 6:54 p.m."
+
+$values$item$`227`
+[1] "7:05 p.m. to 7:09 p.m."
+
+$values$item$`228`
+[1] "7:10 p.m. to 7:14 p.m."
+
+$values$item$`234`
+[1] "7:40 p.m. to 7:44 p.m."
+
+$values$item$`235`
+[1] "7:45 p.m. to 7:49 p.m."
+
+$values$item$`121`
+[1] "10:15 a.m. to 10:19 a.m."
+
+$values$item$`124`
+[1] "10:30 a.m. to 10:34 a.m."
+
+$values$item$`006`
+[1] "12:25 a.m. to 12:29 a.m."
+
+$values$item$`008`
+[1] "12:40 a.m. to 12:44 a.m."
+
+$values$item$`009`
+[1] "12:45 a.m. to 12:49 a.m."
+
+$values$item$`251`
+[1] "9:05 p.m. to 9:09 p.m."
+
+$values$item$`011`
+[1] "1:00 a.m. to 1:04 a.m."
+
+$values$item$`256`
+[1] "9:30 p.m. to 9:34 p.m."
+
+$values$item$`137`
+[1] "11:35 a.m. to 11:39 a.m."
+
+$values$item$`017`
+[1] "1:30 a.m. to 1:34 a.m."
+
+$values$item$`259`
+[1] "9:45 p.m. to 9:49 p.m."
+
+$values$item$`020`
+[1] "1:45 a.m. to 1:49 a.m."
+
+$values$item$`262`
+[1] "10:00 p.m. to 10:04 p.m."
+
+$values$item$`270`
+[1] "10:40 p.m. to 10:44 p.m."
+
+$values$item$`271`
+[1] "10:45 p.m. to 10:49 p.m."
+
+$values$item$`031`
+[1] "2:45 a.m. to 2:49 a.m."
+
+$values$item$`276`
+[1] "11:10 p.m. to 11:14 p.m."
+
+$values$item$`156`
+[1] "1:10 p.m. to 1:14 p.m."
+
+$values$item$`039`
+[1] "3:25 a.m. to 3:29 a.m."
+
+$values$item$`284`
+[1] "11:50 p.m. to 11:54 p.m."
+
+$values$item$`164`
+[1] "1:50 p.m. to 1:54 p.m."
+
+$values$item$`173`
+[1] "2:35 p.m. to 2:39 p.m."
+
+$values$item$`053`
+[1] "4:35 a.m. to 4:39 a.m."
+
+$values$item$`065`
+[1] "5:35 a.m. to 5:39 a.m."
+
+$values$item$`075`
+[1] "6:25 a.m. to 6:29 a.m."
+
+$values$item$`197`
+[1] "4:35 p.m. to 4:39 p.m."
+
+$values$item$`085`
+[1] "7:15 a.m. to 7:19 a.m."
+
+$values$item$`090`
+[1] "7:40 a.m. to 7:44 a.m."
+
+$values$item$`202`
+[1] "5:00 p.m. to 5:04 p.m."
+
+$values$item$`101`
+[1] "8:35 a.m. to 8:39 a.m."
+
+$values$item$`107`
+[1] "9:05 a.m. to 9:09 a.m."
+
+$values$item$`230`
+[1] "7:20 p.m. to 7:24 p.m."
+
+$values$item$`233`
+[1] "7:35 p.m. to 7:39 p.m."
+
+$values$item$`117`
+[1] "9:55 a.m. to 9:59 a.m."
+
+$values$item$`118`
+[1] "10:00 a.m. to 10:04 a.m."
+
+$values$item$`002`
+[1] "12:05 a.m. to 12:09 a.m."
+
+$values$item$`004`
+[1] "12:15 a.m. to 12:19 a.m."
+
+$values$item$`246`
+[1] "8:40 p.m. to 8:44 p.m."
+
+$values$item$`249`
+[1] "8:55 p.m. to 8:59 p.m."
+
+$values$item$`129`
+[1] "10:55 a.m. to 10:59 a.m."
+
+$values$item$`132`
+[1] "11:10 a.m. to 11:14 a.m."
+
+$values$item$`015`
+[1] "1:20 a.m. to 1:24 a.m."
+
+$values$item$`257`
+[1] "9:35 p.m. to 9:39 p.m."
+
+$values$item$`138`
+[1] "11:40 a.m. to 11:44 a.m."
+
+$values$item$`144`
+[1] "12:10 p.m. to 12:14 p.m."
+
+$values$item$`148`
+[1] "12:30 p.m. to 12:34 p.m."
+
+$values$item$`150`
+[1] "12:40 p.m. to 12:44 p.m."
+
+$values$item$`152`
+[1] "12:50 p.m. to 12:54 p.m."
+
+$values$item$`273`
+[1] "10:55 p.m. to 10:59 p.m."
+
+$values$item$`034`
+[1] "3:00 a.m. to 3:04 a.m."
+
+$values$item$`035`
+[1] "3:05 a.m. to 3:09 a.m."
+
+$values$item$`277`
+[1] "11:15 p.m. to 11:19 p.m."
+
+$values$item$`042`
+[1] "3:40 a.m. to 3:44 a.m."
+
+$values$item$`044`
+[1] "3:50 a.m. to 3:54 a.m."
+
+$values$item$`166`
+[1] "2:00 p.m. to 2:04 p.m."
+
+$values$item$`050`
+[1] "4:20 a.m. to 4:24 a.m."
+
+$values$item$`052`
+[1] "4:30 a.m. to 4:34 a.m."
+
+$values$item$`055`
+[1] "4:45 a.m. to 4:49 a.m."
+
+$values$item$`181`
+[1] "3:15 p.m. to 3:19 p.m."
+
+$values$item$`183`
+[1] "3:25 p.m. to 3:29 p.m."
+
+$values$item$`069`
+[1] "5:55 a.m. to 5:59 a.m."
+
+$values$item$`071`
+[1] "6:05 a.m. to 6:09 a.m."
+
+$values$item$`077`
+[1] "6:35 a.m. to 6:39 a.m."
+
+$values$item$`079`
+[1] "6:45 a.m. to 6:49 a.m."
+
+$values$item$`082`
+[1] "7:00 a.m. to 7:04 a.m."
+
+$values$item$`089`
+[1] "7:35 a.m. to 7:39 a.m."
+
+$values$item$`092`
+[1] "7:50 a.m. to 7:54 a.m."
+
+$values$item$`093`
+[1] "7:55 a.m. to 7:59 a.m."
+
+$values$item$`097`
+[1] "8:15 a.m. to 8:19 a.m."
+
+$values$item$`205`
+[1] "5:15 p.m. to 5:19 p.m."
+
+$values$item$`219`
+[1] "6:25 p.m. to 6:29 p.m."
+
+$values$item$`239`
+[1] "8:05 p.m. to 8:09 p.m."
+
+$values$item$`244`
+[1] "8:30 p.m. to 8:34 p.m."
+
+$values$item$`125`
+[1] "10:35 a.m. to 10:39 a.m."
+
+$values$item$`254`
+[1] "9:20 p.m. to 9:24 p.m."
+
+$values$item$`013`
+[1] "1:10 a.m. to 1:14 a.m."
+
+$values$item$`014`
+[1] "1:15 a.m. to 1:19 a.m."
+
+$values$item$`019`
+[1] "1:40 a.m. to 1:44 a.m."
+
+$values$item$`140`
+[1] "11:50 a.m. to 11:54 a.m."
+
+$values$item$`022`
+[1] "2:00 a.m. to 2:04 a.m."
+
+$values$item$`265`
+[1] "10:15 p.m. to 10:19 p.m."
+
+$values$item$`272`
+[1] "10:50 p.m. to 10:54 p.m."
+
+$values$item$`033`
+[1] "2:55 a.m. to 2:59 a.m."
+
+$values$item$`037`
+[1] "3:15 a.m. to 3:19 a.m."
+
+$values$item$`041`
+[1] "3:35 a.m. to 3:39 a.m."
+
+$values$item$`172`
+[1] "2:30 p.m. to 2:34 p.m."
+
+$values$item$`178`
+[1] "3:00 p.m. to 3:04 p.m."
+
+$values$item$`059`
+[1] "5:05 a.m. to 5:09 a.m."
+
+$values$item$`182`
+[1] "3:20 p.m. to 3:24 p.m."
+
+$values$item$`185`
+[1] "3:35 p.m. to 3:39 p.m."
+
+$values$item$`187`
+[1] "3:45 p.m. to 3:49 p.m."
+
+$values$item$`067`
+[1] "5:45 a.m. to 5:49 a.m."
+
+$values$item$`068`
+[1] "5:50 a.m. to 5:54 a.m."
+
+$values$item$`074`
+[1] "6:20 a.m. to 6:24 a.m."
+
+$values$item$`199`
+[1] "4:45 p.m. to 4:49 p.m."
+
+$values$item$`080`
+[1] "6:50 a.m. to 6:54 a.m."
+
+$values$item$`084`
+[1] "7:10 a.m. to 7:14 a.m."
+
+$values$item$`088`
+[1] "7:30 a.m. to 7:34 a.m."
+
+$values$item$`095`
+[1] "8:05 a.m. to 8:09 a.m."
+
+$values$item$`206`
+[1] "5:20 p.m. to 5:24 p.m."
+
+$values$item$`208`
+[1] "5:30 p.m. to 5:34 p.m."
+
+$values$item$`209`
+[1] "5:35 p.m. to 5:39 p.m."
+
+$values$item$`100`
+[1] "8:30 a.m. to 8:34 a.m."
+
+$values$item$`114`
+[1] "9:40 a.m. to 9:44 a.m."
+
+$values$item$`001`
+[1] "12:00 a.m. to 12:04 a.m."
+
+$values$item$`243`
+[1] "8:25 p.m. to 8:29 p.m."
+
+$values$item$`005`
+[1] "12:20 a.m. to 12:24 a.m."
+
+$values$item$`007`
+[1] "12:30 a.m. to 12:39 a.m."
+
+$values$item$`135`
+[1] "11:25 a.m. to 11:29 a.m."
+
+$values$item$`143`
+[1] "12:05 p.m. to 12:09 p.m."
+
+$values$item$`023`
+[1] "2:05 a.m. to 2:09 a.m."
+
+$values$item$`025`
+[1] "2:15 a.m. to 2:19 a.m."
+
+$values$item$`268`
+[1] "10:30 p.m. to 10:34 p.m."
+
+$values$item$`269`
+[1] "10:35 p.m. to 10:39 p.m."
+
+$values$item$`149`
+[1] "12:35 p.m. to 12:39 p.m."
+
+$values$item$`029`
+[1] "2:35 a.m. to 2:39 a.m."
+
+$values$item$`036`
+[1] "3:10 a.m. to 3:14 a.m."
+
+$values$item$`157`
+[1] "1:15 p.m. to 1:19 p.m."
+
+$values$item$`158`
+[1] "1:20 p.m. to 1:24 p.m."
+
+$values$item$`279`
+[1] "11:25 p.m. to 11:29 p.m."
+
+$values$item$`160`
+[1] "1:30 p.m. to 1:34 p.m."
+
+$values$item$`043`
+[1] "3:45 a.m. to 3:49 a.m."
+
+$values$item$`046`
+[1] "4:00 a.m. to 4:04 a.m."
+
+$values$item$`170`
+[1] "2:20 p.m. to 2:24 p.m."
+
+$values$item$`051`
+[1] "4:25 a.m. to 4:29 a.m."
+
+$values$item$`174`
+[1] "2:40 p.m. to 2:44 p.m."
+
+$values$item$`056`
+[1] "4:50 a.m. to 4:54 a.m."
+
+$values$item$`179`
+[1] "3:05 p.m. to 3:09 p.m."
+
+$values$item$`073`
+[1] "6:15 a.m. to 6:19 a.m."
+
+$values$item$`194`
+[1] "4:20 p.m. to 4:24 p.m."
+
+$values$item$`196`
+[1] "4:30 p.m. to 4:34 p.m."
+
+$values$item$`081`
+[1] "6:55 a.m. to 6:59 a.m."
+
+$values$item$`098`
+[1] "8:20 a.m. to 8:24 a.m."
+
+$values$item$`211`
+[1] "5:45 p.m. to 5:49 p.m."
+
+$values$item$`212`
+[1] "5:50 p.m. to 5:54 p.m."
+
+$values$item$`214`
+[1] "6:00 p.m. to 6:04 p.m."
+
+$values$item$`103`
+[1] "8:45 a.m. to 8:49 a.m."
+
+$values$item$`106`
+[1] "9:00 a.m. to 9:04 a.m."
+
+$values$item$`111`
+[1] "9:25 a.m. to 9:29 a.m."
+
+$values$item$`119`
+[1] "10:05 a.m. to 10:09 a.m."
+
+$values$item$`241`
+[1] "8:15 p.m. to 8:19 p.m."
+
+$values$item$`123`
+[1] "10:25 a.m. to 10:29 a.m."
+
+$values$item$`126`
+[1] "10:40 a.m. to 10:44 a.m."
+
+$values$item$`134`
+[1] "11:20 a.m. to 11:24 a.m."
+
+$values$item$`016`
+[1] "1:25 a.m. to 1:29 a.m."
+
+$values$item$`018`
+[1] "1:35 a.m. to 1:39 a.m."
+
+$values$item$`139`
+[1] "11:45 a.m. to 11:49 a.m."
+
+$values$item$`141`
+[1] "11:55 a.m. to 11:59 a.m."
+
+$values$item$`021`
+[1] "1:50 a.m. to 1:59 a.m."
+
+$values$item$`264`
+[1] "10:10 p.m. to 10:14 p.m."
+
+$values$item$`266`
+[1] "10:20 p.m. to 10:24 p.m."
+
+$values$item$`028`
+[1] "2:30 a.m. to 2:34 a.m."
+
+$values$item$`151`
+[1] "12:45 p.m. to 12:49 p.m."
+
+$values$item$`153`
+[1] "12:55 p.m. to 12:59 p.m."
+
+$values$item$`169`
+[1] "2:15 p.m. to 2:19 p.m."
+
+$values$item$`054`
+[1] "4:40 a.m. to 4:44 a.m."
+
+$values$item$`180`
+[1] "3:10 p.m. to 3:14 p.m."
+
+$values$item$`060`
+[1] "5:10 a.m. to 5:14 a.m."
+
+$values$item$`064`
+[1] "5:30 a.m. to 5:34 a.m."
+
+$values$item$`070`
+[1] "6:00 a.m. to 6:04 a.m."
+
+$values$item$`078`
+[1] "6:40 a.m. to 6:44 a.m."
+
+$values$item$`087`
+[1] "7:25 a.m. to 7:29 a.m."
+
+$values$item$`203`
+[1] "5:05 p.m. to 5:09 p.m."
+
+$values$item$`204`
+[1] "5:10 p.m. to 5:14 p.m."
+
+$values$item$`207`
+[1] "5:25 p.m. to 5:29 p.m."
+
+$values$item$`215`
+[1] "6:05 p.m. to 6:09 p.m."
+
+$values$item$`216`
+[1] "6:10 p.m. to 6:14 p.m."
+
+$values$item$`217`
+[1] "6:15 p.m. to 6:19 p.m."
+
+$values$item$`223`
+[1] "6:45 p.m. to 6:49 p.m."
+
+$values$item$`225`
+[1] "6:55 p.m. to 6:59 p.m."
+
+$values$item$`105`
+[1] "8:55 a.m. to 8:59 a.m."
+
+$values$item$`232`
+[1] "7:30 p.m. to 7:34 p.m."
+
+$values$item$`116`
+[1] "9:50 a.m. to 9:54 a.m."
+
+$values$item$`0`
+[1] "N/A (not a worker; worker who worked from home)"
+
+$values$item$`003`
+[1] "12:10 a.m. to 12:14 a.m."
+
+$values$item$`247`
+[1] "8:45 p.m. to 8:49 p.m."
+
+$values$item$`248`
+[1] "8:50 p.m. to 8:54 p.m."
+
+$values$item$`128`
+[1] "10:50 a.m. to 10:54 a.m."
+
+$values$item$`010`
+[1] "12:50 a.m. to 12:59 a.m."
+
+$values$item$`252`
+[1] "9:10 p.m. to 9:14 p.m."
+
+$values$item$`253`
+[1] "9:15 p.m. to 9:19 p.m."
+
+$values$item$`133`
+[1] "11:15 a.m. to 11:19 a.m."
+
+$values$item$`255`
+[1] "9:25 p.m. to 9:29 p.m."
+
+$values$item$`136`
+[1] "11:30 a.m. to 11:34 a.m."
+
+$values$item$`263`
+[1] "10:05 p.m. to 10:09 p.m."
+
+$values$item$`267`
+[1] "10:25 p.m. to 10:29 p.m."
+
+$values$item$`147`
+[1] "12:25 p.m. to 12:29 p.m."
+
+$values$item$`154`
+[1] "1:00 p.m. to 1:04 p.m."
+
+$values$item$`155`
+[1] "1:05 p.m. to 1:09 p.m."
+
+$values$item$`278`
+[1] "11:20 p.m. to 11:24 p.m."
+
+$values$item$`038`
+[1] "3:20 a.m. to 3:24 a.m."
+
+$values$item$`280`
+[1] "11:30 p.m. to 11:34 p.m."
+
+$values$item$`281`
+[1] "11:35 p.m. to 11:39 p.m."
+
+$values$item$`161`
+[1] "1:35 p.m. to 1:39 p.m."
+
+$values$item$`282`
+[1] "11:40 p.m. to 11:44 p.m."
+
+$values$item$`162`
+[1] "1:40 p.m. to 1:44 p.m."
+
+$values$item$`167`
+[1] "2:05 p.m. to 2:09 p.m."
+
+$values$item$`049`
+[1] "4:15 a.m. to 4:19 a.m."
+
+$values$item$`175`
+[1] "2:45 p.m. to 2:49 p.m."
+
+$values$item$`177`
+[1] "2:55 p.m. to 2:59 p.m."
+
+$values$item$`057`
+[1] "4:55 a.m. to 4:59 a.m."
+
+$values$item$`061`
+[1] "5:15 a.m. to 5:19 a.m."
+
+$values$item$`062`
+[1] "5:20 a.m. to 5:24 a.m."
+
+$values$item$`186`
+[1] "3:40 p.m. to 3:44 p.m."
+
+$values$item$`190`
+[1] "4:00 p.m. to 4:04 p.m."
+
+$values$item$`191`
+[1] "4:05 p.m. to 4:09 p.m."
+
+$values$item$`072`
+[1] "6:10 a.m. to 6:14 a.m."
+
+$values$item$`193`
+[1] "4:15 p.m. to 4:19 p.m."
+
+$values$item$`083`
+[1] "7:05 a.m. to 7:09 a.m."
+
+$values$item$`200`
+[1] "4:50 p.m. to 4:54 p.m."
+
+$values$item$`201`
+[1] "4:55 p.m. to 4:59 p.m."
+
+$values$item$`104`
+[1] "8:50 a.m. to 8:54 a.m."
+
+$values$item$`226`
+[1] "7:00 p.m. to 7:04 p.m."
+
+$values$item$`108`
+[1] "9:10 a.m. to 9:14 a.m."
+
+$values$item$`110`
+[1] "9:20 a.m. to 9:24 a.m."
+
+$values$item$`231`
+[1] "7:25 p.m. to 7:29 p.m."
+
+$values$item$`112`
+[1] "9:30 a.m. to 9:34 a.m."
+
+$values$item$`113`
+[1] "9:35 a.m. to 9:39 a.m."
+
+$values$item$`115`
+[1] "9:45 a.m. to 9:49 a.m."
+
+$values$item$`236`
+[1] "7:50 p.m. to 7:54 p.m."
+
+$values$item$`237`
+[1] "7:55 p.m. to 7:59 p.m."
+
+$values$item$`238`
+[1] "8:00 p.m. to 8:04 p.m."
+
+$values$item$`240`
+[1] "8:10 p.m. to 8:14 p.m."
+
+$values$item$`120`
+[1] "10:10 a.m. to 10:14 a.m."
+
+$values$item$`242`
+[1] "8:20 p.m. to 8:24 p.m."
+
+$values$item$`245`
+[1] "8:35 p.m. to 8:39 p.m."
+
+$values$item$`127`
+[1] "10:45 a.m. to 10:49 a.m."
+
+$values$item$`250`
+[1] "9:00 p.m. to 9:04 p.m."
+
+$values$item$`130`
+[1] "11:00 a.m. to 11:04 a.m."
+
+$values$item$`131`
+[1] "11:05 a.m. to 11:09 a.m."
+
+$values$item$`012`
+[1] "1:05 a.m. to 1:09 a.m."
+
+$values$item$`024`
+[1] "2:10 a.m. to 2:14 a.m."
+
+$values$item$`145`
+[1] "12:15 p.m. to 12:19 p.m."
+
+$values$item$`026`
+[1] "2:20 a.m. to 2:24 a.m."
+
+$values$item$`027`
+[1] "2:25 a.m. to 2:29 a.m."
+
+$values$item$`030`
+[1] "2:40 a.m. to 2:44 a.m."
+
+$values$item$`032`
+[1] "2:50 a.m. to 2:54 a.m."
+
+$values$item$`275`
+[1] "11:05 p.m. to 11:09 p.m."
+
+$values$item$`159`
+[1] "1:25 p.m. to 1:29 p.m."
+
+$values$item$`040`
+[1] "3:30 a.m. to 3:34 a.m."
+
+$values$item$`283`
+[1] "11:45 p.m. to 11:49 p.m."
+
+$values$item$`285`
+[1] "11:55 p.m. to 11:59 p.m."
+
+$values$item$`045`
+[1] "3:55 a.m. to 3:59 a.m."
+
+$values$item$`047`
+[1] "4:05 a.m. to 4:09 a.m."
+
+$values$item$`168`
+[1] "2:10 p.m. to 2:14 p.m."
+
+$values$item$`176`
+[1] "2:50 p.m. to 2:54 p.m."
+
+$values$item$`063`
+[1] "5:25 a.m. to 5:29 a.m."
+
+$values$item$`066`
+[1] "5:40 a.m. to 5:44 a.m."
+
+$values$item$`188`
+[1] "3:50 p.m. to 3:54 p.m."
+
+$values$item$`195`
+[1] "4:25 p.m. to 4:29 p.m."
+
+$values$item$`086`
+[1] "7:20 a.m. to 7:24 a.m."
+
+$values$item$`096`
+[1] "8:10 a.m. to 8:14 a.m."
+
+$values$item$`099`
+[1] "8:25 a.m. to 8:29 a.m."
+
+$values$item$`213`
+[1] "5:55 p.m. to 5:59 p.m."
+
+$values$item$`102`
+[1] "8:40 a.m. to 8:44 a.m."
+
+$values$item$`229`
+[1] "7:15 p.m. to 7:19 p.m."
+
+$values$item$`109`
+[1] "9:15 a.m. to 9:19 a.m."</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>jwap_metadata <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="fu">rawToChar</span>(response<span class="sc">$</span>content))</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>jwap_values <span class="ot">&lt;-</span> <span class="fu">unlist</span>(jwap_metadata<span class="sc">$</span>values<span class="sc">$</span>item)</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(jwap_values)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                       122                        258 
+"10:20 a.m. to 10:24 a.m."   "9:40 p.m. to 9:44 p.m." 
+                       260                        261 
+  "9:50 p.m. to 9:54 p.m."   "9:55 p.m. to 9:59 p.m." 
+                       142                        146 
+"12:00 p.m. to 12:04 p.m." "12:20 p.m. to 12:24 p.m." </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>arrive_test <span class="ot">&lt;-</span> <span class="fu">query_census</span>(</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">numeric_vars =</span> <span class="fu">c</span>(<span class="st">"JWAP"</span>, <span class="st">"PWGTP"</span>),</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">api_key =</span> api_key</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in `query_census()`:
+! could not find function "query_census"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(arrive_test<span class="sc">$</span>JWAP)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error:
+! object 'arrive_test' not found</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>jwap_time <span class="ot">&lt;-</span> <span class="fu">parse_time</span>(</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  arrive_test<span class="sc">$</span>JWAP,</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  jwap_values</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error:
+! object 'arrive_test' not found</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(jwap_time)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error:
+! object 'jwap_time' not found</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="co"># JWDP metadata </span></span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"https://api.census.gov/data/2024/acs/acs1/pums/variables/JWDP.json"</span></span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>response_jwdp <span class="ot">&lt;-</span> <span class="fu">GET</span>(url)</span>
+<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a>jwdp_metadata <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="fu">rawToChar</span>(response_jwdp<span class="sc">$</span>content))</span>
+<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a>jwdp_values <span class="ot">&lt;-</span> <span class="fu">unlist</span>(jwdp_metadata<span class="sc">$</span>values<span class="sc">$</span>item)</span>
+<span id="cb58-12"><a href="#cb58-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-13"><a href="#cb58-13" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(jwdp_values)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     014                      015                      017 
+"4:10 a.m. to 4:19 a.m." "4:20 a.m. to 4:29 a.m." "4:40 a.m. to 4:49 a.m." 
+                     022                      035                      046 
+"5:15 a.m. to 5:19 a.m." "6:20 a.m. to 6:24 a.m." "7:15 a.m. to 7:19 a.m." </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>depart_test <span class="ot">&lt;-</span> <span class="fu">query_census</span>(</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">numeric_vars =</span> <span class="fu">c</span>(<span class="st">"JWDP"</span>, <span class="st">"PWGTP"</span>),</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">api_key =</span> api_key</span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in `query_census()`:
+! could not find function "query_census"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>jwdp_time <span class="ot">&lt;-</span> <span class="fu">parse_time</span>(</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>  depart_test<span class="sc">$</span>JWDP,</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>  jwdp_values</span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error:
+! object 'depart_test' not found</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(jwdp_time)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error:
+! object 'jwdp_time' not found</code></pre>
+</div>
+</div>
+</section>
+<section id="main-function" class="level3">
+<h3 class="anchored" data-anchor-id="main-function">Main Function</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create main parsing function </span></span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a><span class="co"># first set up description and defaults </span></span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a>query_census <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">year =</span> <span class="dv">2024</span>,</span>
+<span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">numeric_vars =</span> <span class="fu">c</span>(<span class="st">"AGEP"</span>, <span class="st">"PWGTP"</span>),</span>
+<span id="cb66-8"><a href="#cb66-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">categorical_vars =</span> <span class="st">"SEX"</span>,</span>
+<span id="cb66-9"><a href="#cb66-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">geography =</span> <span class="st">"State"</span>,</span>
+<span id="cb66-10"><a href="#cb66-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">specific_geography =</span> <span class="cn">NULL</span>,</span>
+<span id="cb66-11"><a href="#cb66-11" aria-hidden="true" tabindex="-1"></a>    api_key</span>
+<span id="cb66-12"><a href="#cb66-12" aria-hidden="true" tabindex="-1"></a>) </span>
+<span id="cb66-13"><a href="#cb66-13" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb66-14"><a href="#cb66-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># check for valid year</span></span>
+<span id="cb66-15"><a href="#cb66-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span>year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2021</span>, <span class="dv">2022</span>, <span class="dv">2023</span>, <span class="dv">2024</span>)) {</span>
+<span id="cb66-16"><a href="#cb66-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"year must be in 2021, 2022, 2023, or 2024"</span>)</span>
+<span id="cb66-17"><a href="#cb66-17" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb66-18"><a href="#cb66-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-19"><a href="#cb66-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># specify numeric variables that can be returned</span></span>
+<span id="cb66-20"><a href="#cb66-20" aria-hidden="true" tabindex="-1"></a>  allowed_num <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"AGEP"</span>, <span class="st">"GASP"</span>, <span class="st">"GRPIP"</span>, <span class="st">"JWAP"</span>, <span class="st">"JWDP"</span>, <span class="st">"JWMNP"</span>, <span class="st">"PWGTP"</span>)</span>
+<span id="cb66-21"><a href="#cb66-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-22"><a href="#cb66-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># check</span></span>
+<span id="cb66-23"><a href="#cb66-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">all</span>(numeric_vars <span class="sc">%in%</span> allowed_num)) {</span>
+<span id="cb66-24"><a href="#cb66-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"Invalid numeric variable. Choose from AGEP, GASP, GRPIP, JWAP, JWDP, JWMNP, and PWGTP."</span>)</span>
+<span id="cb66-25"><a href="#cb66-25" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb66-26"><a href="#cb66-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-27"><a href="#cb66-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># make sure PWGTP is always returned </span></span>
+<span id="cb66-28"><a href="#cb66-28" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="st">"PWGTP"</span> <span class="sc">%in%</span> numeric_vars) {</span>
+<span id="cb66-29"><a href="#cb66-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"PWGTP must be included."</span>)</span>
+<span id="cb66-30"><a href="#cb66-30" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb66-31"><a href="#cb66-31" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-32"><a href="#cb66-32" aria-hidden="true" tabindex="-1"></a>  <span class="co"># make sure another numeric variable is returned </span></span>
+<span id="cb66-33"><a href="#cb66-33" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(numeric_vars) <span class="sc">&lt;</span> <span class="dv">2</span>) {</span>
+<span id="cb66-34"><a href="#cb66-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"numeric_vars must included PWGTP and at least one other numeric variable."</span>)</span>
+<span id="cb66-35"><a href="#cb66-35" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb66-36"><a href="#cb66-36" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-37"><a href="#cb66-37" aria-hidden="true" tabindex="-1"></a>  <span class="co"># specify categorical variables that can be returned </span></span>
+<span id="cb66-38"><a href="#cb66-38" aria-hidden="true" tabindex="-1"></a>  allowed_cat <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"FER"</span>, <span class="st">"HHL"</span>, <span class="st">"SCH"</span>, <span class="st">"SCHL"</span>, <span class="st">"SEX"</span>)</span>
+<span id="cb66-39"><a href="#cb66-39" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-40"><a href="#cb66-40" aria-hidden="true" tabindex="-1"></a>  <span class="co"># check</span></span>
+<span id="cb66-41"><a href="#cb66-41" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">all</span>(categorical_vars <span class="sc">%in%</span> allowed_cat)) {</span>
+<span id="cb66-42"><a href="#cb66-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"Invalid categorical variable. Choose from FER, HHL, SCH, SCHL, and SEX."</span>)</span>
+<span id="cb66-43"><a href="#cb66-43" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb66-44"><a href="#cb66-44" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-45"><a href="#cb66-45" aria-hidden="true" tabindex="-1"></a>  <span class="co"># make sure at least one categorical variable is returned </span></span>
+<span id="cb66-46"><a href="#cb66-46" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(categorical_vars) <span class="sc">&lt;</span> <span class="dv">1</span>) {</span>
+<span id="cb66-47"><a href="#cb66-47" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"At least one categorical variable must be included."</span>)</span>
+<span id="cb66-48"><a href="#cb66-48" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb66-49"><a href="#cb66-49" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-50"><a href="#cb66-50" aria-hidden="true" tabindex="-1"></a>  <span class="co"># specify geography levels that can be returned </span></span>
+<span id="cb66-51"><a href="#cb66-51" aria-hidden="true" tabindex="-1"></a>  allowed_geo <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Region"</span>, <span class="st">"Division"</span>, <span class="st">"State"</span>)</span>
+<span id="cb66-52"><a href="#cb66-52" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-53"><a href="#cb66-53" aria-hidden="true" tabindex="-1"></a>  <span class="co"># make sure only one level can be returned </span></span>
+<span id="cb66-54"><a href="#cb66-54" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(geography) <span class="sc">!=</span> <span class="dv">1</span> <span class="sc">||</span> <span class="sc">!</span>geography <span class="sc">%in%</span> allowed_geo) {</span>
+<span id="cb66-55"><a href="#cb66-55" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"geography must be either Region, Division, or State."</span>)</span>
+<span id="cb66-56"><a href="#cb66-56" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb66-57"><a href="#cb66-57" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-58"><a href="#cb66-58" aria-hidden="true" tabindex="-1"></a>  <span class="co"># specify the available geography that can be subset </span></span>
+<span id="cb66-59"><a href="#cb66-59" aria-hidden="true" tabindex="-1"></a>  geo_values <span class="ot">&lt;-</span> <span class="fu">get_geo</span>(year, geography)</span>
+<span id="cb66-60"><a href="#cb66-60" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-61"><a href="#cb66-61" aria-hidden="true" tabindex="-1"></a>  <span class="co"># if no specific_geography, use North Carolina as default </span></span>
+<span id="cb66-62"><a href="#cb66-62" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(specific_geography)) {</span>
+<span id="cb66-63"><a href="#cb66-63" aria-hidden="true" tabindex="-1"></a>    specific_geography <span class="ot">&lt;-</span> <span class="st">"North Carolina"</span></span>
+<span id="cb66-64"><a href="#cb66-64" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb66-65"><a href="#cb66-65" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-66"><a href="#cb66-66" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return error if user requests Puerto Rico</span></span>
+<span id="cb66-67"><a href="#cb66-67" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">grepl</span>(<span class="st">"Puerto Rico"</span>, specific_geography, <span class="at">ignore.case =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb66-68"><a href="#cb66-68" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"Puerto Rico is not included in this function."</span>)</span>
+<span id="cb66-69"><a href="#cb66-69" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb66-70"><a href="#cb66-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-71"><a href="#cb66-71" aria-hidden="true" tabindex="-1"></a>  <span class="co"># find Census code for selected geography</span></span>
+<span id="cb66-72"><a href="#cb66-72" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (specific_geography <span class="sc">==</span> <span class="st">"all"</span>) {</span>
+<span id="cb66-73"><a href="#cb66-73" aria-hidden="true" tabindex="-1"></a>    geo_code <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb66-74"><a href="#cb66-74" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb66-75"><a href="#cb66-75" aria-hidden="true" tabindex="-1"></a>    geo_code <span class="ot">&lt;-</span> <span class="fu">names</span>(</span>
+<span id="cb66-76"><a href="#cb66-76" aria-hidden="true" tabindex="-1"></a>    geo_values[<span class="fu">grepl</span>(</span>
+<span id="cb66-77"><a href="#cb66-77" aria-hidden="true" tabindex="-1"></a>      specific_geography,</span>
+<span id="cb66-78"><a href="#cb66-78" aria-hidden="true" tabindex="-1"></a>      geo_values,</span>
+<span id="cb66-79"><a href="#cb66-79" aria-hidden="true" tabindex="-1"></a>      <span class="at">fixed =</span> <span class="cn">TRUE</span></span>
+<span id="cb66-80"><a href="#cb66-80" aria-hidden="true" tabindex="-1"></a>    )]</span>
+<span id="cb66-81"><a href="#cb66-81" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb66-82"><a href="#cb66-82" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb66-83"><a href="#cb66-83" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-84"><a href="#cb66-84" aria-hidden="true" tabindex="-1"></a>  <span class="co"># make sure valid specific geography is returned </span></span>
+<span id="cb66-85"><a href="#cb66-85" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(geo_code) <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;&amp;</span> specific_geography <span class="sc">!=</span> <span class="st">"all"</span>) {</span>
+<span id="cb66-86"><a href="#cb66-86" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"Invalid specific_geography."</span>)</span>
+<span id="cb66-87"><a href="#cb66-87" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb66-88"><a href="#cb66-88" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-89"><a href="#cb66-89" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create API query</span></span>
+<span id="cb66-90"><a href="#cb66-90" aria-hidden="true" tabindex="-1"></a>  get_variables <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="fu">c</span>(numeric_vars, categorical_vars),</span>
+<span id="cb66-91"><a href="#cb66-91" aria-hidden="true" tabindex="-1"></a>                         <span class="at">collapse =</span> <span class="st">","</span></span>
+<span id="cb66-92"><a href="#cb66-92" aria-hidden="true" tabindex="-1"></a>                         )</span>
+<span id="cb66-93"><a href="#cb66-93" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-94"><a href="#cb66-94" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (specific_geography <span class="sc">==</span> <span class="st">"all"</span>) {</span>
+<span id="cb66-95"><a href="#cb66-95" aria-hidden="true" tabindex="-1"></a>    for_part <span class="ot">&lt;-</span> <span class="fu">paste0</span>(</span>
+<span id="cb66-96"><a href="#cb66-96" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tolower</span>(geography),</span>
+<span id="cb66-97"><a href="#cb66-97" aria-hidden="true" tabindex="-1"></a>      <span class="st">":*"</span></span>
+<span id="cb66-98"><a href="#cb66-98" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb66-99"><a href="#cb66-99" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb66-100"><a href="#cb66-100" aria-hidden="true" tabindex="-1"></a>    for_part <span class="ot">&lt;-</span> <span class="fu">paste0</span>(</span>
+<span id="cb66-101"><a href="#cb66-101" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tolower</span>(geography),</span>
+<span id="cb66-102"><a href="#cb66-102" aria-hidden="true" tabindex="-1"></a>      <span class="st">":"</span>,</span>
+<span id="cb66-103"><a href="#cb66-103" aria-hidden="true" tabindex="-1"></a>      geo_code</span>
+<span id="cb66-104"><a href="#cb66-104" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb66-105"><a href="#cb66-105" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb66-106"><a href="#cb66-106" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-107"><a href="#cb66-107" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create API URL</span></span>
+<span id="cb66-108"><a href="#cb66-108" aria-hidden="true" tabindex="-1"></a>  url2 <span class="ot">&lt;-</span> <span class="fu">paste0</span>(</span>
+<span id="cb66-109"><a href="#cb66-109" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://api.census.gov/data/"</span>,</span>
+<span id="cb66-110"><a href="#cb66-110" aria-hidden="true" tabindex="-1"></a>    year,</span>
+<span id="cb66-111"><a href="#cb66-111" aria-hidden="true" tabindex="-1"></a>    <span class="st">"/acs/acs1/pums?"</span>,</span>
+<span id="cb66-112"><a href="#cb66-112" aria-hidden="true" tabindex="-1"></a>    <span class="st">"get="</span>,</span>
+<span id="cb66-113"><a href="#cb66-113" aria-hidden="true" tabindex="-1"></a>    get_variables,</span>
+<span id="cb66-114"><a href="#cb66-114" aria-hidden="true" tabindex="-1"></a>    <span class="st">"&amp;for="</span>,</span>
+<span id="cb66-115"><a href="#cb66-115" aria-hidden="true" tabindex="-1"></a>    for_part,</span>
+<span id="cb66-116"><a href="#cb66-116" aria-hidden="true" tabindex="-1"></a>    <span class="st">"&amp;key="</span>,</span>
+<span id="cb66-117"><a href="#cb66-117" aria-hidden="true" tabindex="-1"></a>    api_key</span>
+<span id="cb66-118"><a href="#cb66-118" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb66-119"><a href="#cb66-119" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-120"><a href="#cb66-120" aria-hidden="true" tabindex="-1"></a>  <span class="co"># query API</span></span>
+<span id="cb66-121"><a href="#cb66-121" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">query_api</span>(url2)</span>
+<span id="cb66-122"><a href="#cb66-122" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-123"><a href="#cb66-123" aria-hidden="true" tabindex="-1"></a>  <span class="co"># convert numeric variables</span></span>
+<span id="cb66-124"><a href="#cb66-124" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (var <span class="cf">in</span> numeric_vars) {</span>
+<span id="cb66-125"><a href="#cb66-125" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (var <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"JWAP"</span>, <span class="st">"JWDP"</span>)) {</span>
+<span id="cb66-126"><a href="#cb66-126" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb66-127"><a href="#cb66-127" aria-hidden="true" tabindex="-1"></a>      <span class="co"># get metadata</span></span>
+<span id="cb66-128"><a href="#cb66-128" aria-hidden="true" tabindex="-1"></a>      time_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(</span>
+<span id="cb66-129"><a href="#cb66-129" aria-hidden="true" tabindex="-1"></a>        <span class="st">"https://api.census.gov/data/"</span>,</span>
+<span id="cb66-130"><a href="#cb66-130" aria-hidden="true" tabindex="-1"></a>      year,</span>
+<span id="cb66-131"><a href="#cb66-131" aria-hidden="true" tabindex="-1"></a>      <span class="st">"/acs/acs1/pums/variables/"</span>,</span>
+<span id="cb66-132"><a href="#cb66-132" aria-hidden="true" tabindex="-1"></a>      var,</span>
+<span id="cb66-133"><a href="#cb66-133" aria-hidden="true" tabindex="-1"></a>      <span class="st">".json"</span></span>
+<span id="cb66-134"><a href="#cb66-134" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb66-135"><a href="#cb66-135" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb66-136"><a href="#cb66-136" aria-hidden="true" tabindex="-1"></a>      time_response <span class="ot">&lt;-</span> <span class="fu">GET</span>(time_url)</span>
+<span id="cb66-137"><a href="#cb66-137" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb66-138"><a href="#cb66-138" aria-hidden="true" tabindex="-1"></a>      time_metadata <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(</span>
+<span id="cb66-139"><a href="#cb66-139" aria-hidden="true" tabindex="-1"></a>        <span class="fu">rawToChar</span>(time_response<span class="sc">$</span>content)</span>
+<span id="cb66-140"><a href="#cb66-140" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb66-141"><a href="#cb66-141" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb66-142"><a href="#cb66-142" aria-hidden="true" tabindex="-1"></a>      time_values <span class="ot">&lt;-</span> <span class="fu">unlist</span>(</span>
+<span id="cb66-143"><a href="#cb66-143" aria-hidden="true" tabindex="-1"></a>        time_metadata<span class="sc">$</span>values<span class="sc">$</span>item</span>
+<span id="cb66-144"><a href="#cb66-144" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb66-145"><a href="#cb66-145" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb66-146"><a href="#cb66-146" aria-hidden="true" tabindex="-1"></a>      <span class="co"># convert Census time codes to midpoint times</span></span>
+<span id="cb66-147"><a href="#cb66-147" aria-hidden="true" tabindex="-1"></a>      data[[var]] <span class="ot">&lt;-</span> <span class="fu">parse_time</span>(</span>
+<span id="cb66-148"><a href="#cb66-148" aria-hidden="true" tabindex="-1"></a>        data[[var]],</span>
+<span id="cb66-149"><a href="#cb66-149" aria-hidden="true" tabindex="-1"></a>        time_values</span>
+<span id="cb66-150"><a href="#cb66-150" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb66-151"><a href="#cb66-151" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb66-152"><a href="#cb66-152" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb66-153"><a href="#cb66-153" aria-hidden="true" tabindex="-1"></a>      <span class="co"># convert regular numeric variables to numeric</span></span>
+<span id="cb66-154"><a href="#cb66-154" aria-hidden="true" tabindex="-1"></a>      data[[var]] <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(data[[var]])</span>
+<span id="cb66-155"><a href="#cb66-155" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb66-156"><a href="#cb66-156" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb66-157"><a href="#cb66-157" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-158"><a href="#cb66-158" aria-hidden="true" tabindex="-1"></a>  <span class="co"># load variable metadata</span></span>
+<span id="cb66-159"><a href="#cb66-159" aria-hidden="true" tabindex="-1"></a>  var_data <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">paste0</span>(<span class="st">"data/data_"</span>, year, <span class="st">".rds"</span>))</span>
+<span id="cb66-160"><a href="#cb66-160" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-161"><a href="#cb66-161" aria-hidden="true" tabindex="-1"></a>  <span class="co"># convert categorical variables to factors</span></span>
+<span id="cb66-162"><a href="#cb66-162" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (var <span class="cf">in</span> categorical_vars) {</span>
+<span id="cb66-163"><a href="#cb66-163" aria-hidden="true" tabindex="-1"></a>    levels <span class="ot">&lt;-</span> <span class="fu">unlist</span>(var_data[[var]]<span class="sc">$</span>values<span class="sc">$</span>item)</span>
+<span id="cb66-164"><a href="#cb66-164" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb66-165"><a href="#cb66-165" aria-hidden="true" tabindex="-1"></a>    data[[var]] <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
+<span id="cb66-166"><a href="#cb66-166" aria-hidden="true" tabindex="-1"></a>      data[[var]],</span>
+<span id="cb66-167"><a href="#cb66-167" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">names</span>(levels),</span>
+<span id="cb66-168"><a href="#cb66-168" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> levels</span>
+<span id="cb66-169"><a href="#cb66-169" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb66-170"><a href="#cb66-170" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb66-171"><a href="#cb66-171" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-172"><a href="#cb66-172" aria-hidden="true" tabindex="-1"></a>  <span class="co"># give the data the census class</span></span>
+<span id="cb66-173"><a href="#cb66-173" aria-hidden="true" tabindex="-1"></a>  <span class="fu">class</span>(data) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"census"</span>, <span class="fu">class</span>(data))</span>
+<span id="cb66-174"><a href="#cb66-174" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-175"><a href="#cb66-175" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data)</span>
+<span id="cb66-176"><a href="#cb66-176" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="function-tests" class="level3">
+<h3 class="anchored" data-anchor-id="function-tests">Function Tests</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test years</span></span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a><span class="co"># valid</span></span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>test_2021 <span class="ot">&lt;-</span> <span class="fu">query_census</span>(</span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">year =</span> <span class="dv">2021</span>,</span>
+<span id="cb67-6"><a href="#cb67-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">api_key =</span> api_key</span>
+<span id="cb67-7"><a href="#cb67-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb67-8"><a href="#cb67-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(test_2021)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 4
+   AGEP PWGTP SEX    state
+  &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;  &lt;chr&gt;
+1    21    78 Male   37   
+2    58     9 Female 37   
+3    20    32 Female 37   
+4    40     6 Female 37   
+5    21   119 Male   37   
+6    20    65 Male   37   </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>test_2023 <span class="ot">&lt;-</span> <span class="fu">query_census</span>(</span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">year =</span> <span class="dv">2023</span>,</span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">api_key =</span> api_key</span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(test_2023)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 4
+   AGEP PWGTP SEX    state
+  &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;  &lt;chr&gt;
+1    18    62 Female 37   
+2    93    94 Female 37   
+3    22    73 Male   37   
+4    39    63 Male   37   
+5    19    50 Male   37   
+6    39    41 Male   37   </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="co"># invalid</span></span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a><span class="fu">query_census</span>(</span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">year =</span> <span class="dv">2002</span>,</span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">api_key =</span> api_key</span>
+<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in `query_census()`:
+! year must be in 2021, 2022, 2023, or 2024</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test numeric variables</span></span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a><span class="co"># valid</span></span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a>test_numeric <span class="ot">&lt;-</span> <span class="fu">query_census</span>(</span>
+<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">numeric_vars =</span> <span class="fu">c</span>(<span class="st">"AGEP"</span>, <span class="st">"PWGTP"</span>),</span>
+<span id="cb73-6"><a href="#cb73-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">api_key =</span> api_key</span>
+<span id="cb73-7"><a href="#cb73-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb73-8"><a href="#cb73-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(test_numeric)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 4
+   AGEP PWGTP SEX    state
+  &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;  &lt;chr&gt;
+1    23    60 Male   37   
+2    21    49 Male   37   
+3    20    24 Male   37   
+4    79    54 Female 37   
+5    18    79 Male   37   
+6    19    54 Female 37   </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="co"># invalid numeric variables</span></span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="fu">query_census</span>(</span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">numeric_vars =</span> <span class="fu">c</span>(<span class="st">"BDSP"</span>, <span class="st">"PWGTP"</span>),</span>
+<span id="cb75-4"><a href="#cb75-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">api_key =</span> api_key</span>
+<span id="cb75-5"><a href="#cb75-5" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in `query_census()`:
+! Invalid numeric variable. Choose from AGEP, GASP, GRPIP, JWAP, JWDP, JWMNP, and PWGTP.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">query_census</span>(</span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">numeric_vars =</span> <span class="fu">c</span>(<span class="st">"AGEP"</span>, <span class="st">"GASP"</span>),</span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">api_key =</span> api_key</span>
+<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in `query_census()`:
+! PWGTP must be included.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">query_census</span>(</span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">numeric_vars =</span> <span class="st">"PWGTP"</span>,</span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">api_key =</span> api_key</span>
+<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in `query_census()`:
+! numeric_vars must included PWGTP and at least one other numeric variable.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test categorical variables</span></span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a><span class="co"># valid</span></span>
+<span id="cb81-4"><a href="#cb81-4" aria-hidden="true" tabindex="-1"></a>test_categorical <span class="ot">&lt;-</span> <span class="fu">query_census</span>(</span>
+<span id="cb81-5"><a href="#cb81-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">numeric_vars =</span> <span class="fu">c</span>(<span class="st">"GASP"</span>, <span class="st">"PWGTP"</span>),</span>
+<span id="cb81-6"><a href="#cb81-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">categorical_vars =</span> <span class="fu">c</span>(<span class="st">"FER"</span>, <span class="st">"SEX"</span>),</span>
+<span id="cb81-7"><a href="#cb81-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">api_key =</span> api_key</span>
+<span id="cb81-8"><a href="#cb81-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb81-9"><a href="#cb81-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb81-10"><a href="#cb81-10" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(test_categorical)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 5
+   GASP PWGTP FER                                                  SEX    state
+  &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;                                                &lt;fct&gt;  &lt;chr&gt;
+1     3    60 N/A (less than 15 years/greater than 50 years/ male) Male   37   
+2     3    49 N/A (less than 15 years/greater than 50 years/ male) Male   37   
+3     3    24 N/A (less than 15 years/greater than 50 years/ male) Male   37   
+4     3    54 N/A (less than 15 years/greater than 50 years/ male) Female 37   
+5     3    79 N/A (less than 15 years/greater than 50 years/ male) Male   37   
+6     3    54 No                                                   Female 37   </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(test_categorical<span class="sc">$</span>SEX)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "factor"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(test_categorical<span class="sc">$</span>SEX)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Male"   "Female"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="co"># invalid</span></span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a><span class="fu">query_census</span>(</span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">categorical_vars =</span> <span class="st">"WAOB"</span>,</span>
+<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">api_key =</span> api_key</span>
+<span id="cb87-5"><a href="#cb87-5" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in `query_census()`:
+! Invalid categorical variable. Choose from FER, HHL, SCH, SCHL, and SEX.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test geography</span></span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a><span class="co"># valid </span></span>
+<span id="cb89-4"><a href="#cb89-4" aria-hidden="true" tabindex="-1"></a>test_geo <span class="ot">&lt;-</span> <span class="fu">query_census</span>(</span>
+<span id="cb89-5"><a href="#cb89-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">geography =</span> <span class="st">"Region"</span>,</span>
+<span id="cb89-6"><a href="#cb89-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">specific_geography =</span> <span class="st">"South"</span>,</span>
+<span id="cb89-7"><a href="#cb89-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">api_key =</span> api_key</span>
+<span id="cb89-8"><a href="#cb89-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb89-9"><a href="#cb89-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(test_geo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 4
+   AGEP PWGTP SEX    region
+  &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;  &lt;chr&gt; 
+1    25   103 Male   3     
+2    47    38 Male   3     
+3    35    55 Male   3     
+4    23    60 Male   3     
+5    43     8 Female 3     
+6    46    39 Male   3     </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a>test_geo2 <span class="ot">&lt;-</span> <span class="fu">query_census</span>(</span>
+<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">specific_geography =</span> <span class="st">"California"</span>,</span>
+<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">api_key =</span> api_key</span>
+<span id="cb91-4"><a href="#cb91-4" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb91-5"><a href="#cb91-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(test_geo2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 4
+   AGEP PWGTP SEX    state
+  &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;  &lt;chr&gt;
+1    45    78 Male   06   
+2    45    39 Male   06   
+3    21    10 Female 06   
+4    28    23 Male   06   
+5    19    53 Female 06   
+6    56    15 Male   06   </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="co"># invalid geography</span></span>
+<span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a><span class="fu">query_census</span>(</span>
+<span id="cb93-3"><a href="#cb93-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">geography =</span> <span class="st">"All"</span>,</span>
+<span id="cb93-4"><a href="#cb93-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">api_key =</span> api_key</span>
+<span id="cb93-5"><a href="#cb93-5" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in `query_census()`:
+! geography must be either Region, Division, or State.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="fu">query_census</span>(</span>
+<span id="cb95-2"><a href="#cb95-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">geography =</span> <span class="fu">c</span>(<span class="st">"Region"</span>, <span class="st">"Division"</span>),</span>
+<span id="cb95-3"><a href="#cb95-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">api_key =</span> api_key</span>
+<span id="cb95-4"><a href="#cb95-4" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in `query_census()`:
+! geography must be either Region, Division, or State.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="fu">query_census</span>(</span>
+<span id="cb97-2"><a href="#cb97-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">specific_geography =</span> <span class="st">"Puerto Rico"</span>,</span>
+<span id="cb97-3"><a href="#cb97-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">api_key =</span> api_key</span>
+<span id="cb97-4"><a href="#cb97-4" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in `query_census()`:
+! Puerto Rico is not included in this function.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb99"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="fu">query_census</span>(</span>
+<span id="cb99-2"><a href="#cb99-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">specific_geography =</span> <span class="st">"Cuba"</span>,</span>
+<span id="cb99-3"><a href="#cb99-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">api_key =</span> api_key</span>
+<span id="cb99-4"><a href="#cb99-4" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in `query_census()`:
+! Invalid specific_geography.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test default query</span></span>
+<span id="cb101-2"><a href="#cb101-2" aria-hidden="true" tabindex="-1"></a>test_default <span class="ot">&lt;-</span> <span class="fu">query_census</span>(</span>
+<span id="cb101-3"><a href="#cb101-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">api_key =</span> api_key</span>
+<span id="cb101-4"><a href="#cb101-4" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb101-5"><a href="#cb101-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(test_default)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 4
+   AGEP PWGTP SEX    state
+  &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;  &lt;chr&gt;
+1    23    60 Male   37   
+2    21    49 Male   37   
+3    20    24 Male   37   
+4    79    54 Female 37   
+5    18    79 Male   37   
+6    19    54 Female 37   </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb103"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test time variable</span></span>
+<span id="cb103-2"><a href="#cb103-2" aria-hidden="true" tabindex="-1"></a>test_time <span class="ot">&lt;-</span> <span class="fu">query_census</span>(</span>
+<span id="cb103-3"><a href="#cb103-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">numeric_vars =</span> <span class="fu">c</span>(<span class="st">"JWAP"</span>, <span class="st">"PWGTP"</span>),</span>
+<span id="cb103-4"><a href="#cb103-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">api_key =</span> api_key</span>
+<span id="cb103-5"><a href="#cb103-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb103-6"><a href="#cb103-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(test_time<span class="sc">$</span>JWAP)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>07:32:00
+      NA
+07:37:00
+      NA
+      NA
+      NA</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb105"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(test_time<span class="sc">$</span>JWAP)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "hms"      "difftime"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test census class</span></span>
+<span id="cb107-2"><a href="#cb107-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(test_time)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "census"     "tbl_df"     "tbl"        "data.frame"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="co"># general test</span></span>
+<span id="cb109-2"><a href="#cb109-2" aria-hidden="true" tabindex="-1"></a>gen_test <span class="ot">&lt;-</span> <span class="fu">query_census</span>(</span>
+<span id="cb109-3"><a href="#cb109-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">numeric_vars =</span> <span class="fu">c</span>(<span class="st">"JWAP"</span>, <span class="st">"PWGTP"</span>),</span>
+<span id="cb109-4"><a href="#cb109-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">api_key =</span> api_key</span>
+<span id="cb109-5"><a href="#cb109-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb109-6"><a href="#cb109-6" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(gen_test<span class="sc">$</span>JWAP)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "hms"      "difftime"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(gen_test<span class="sc">$</span>SEX)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "factor"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(gen_test<span class="sc">$</span>SEX)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Male"   "Female"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb115"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gen_test<span class="sc">$</span>SEX)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] Male   Male   Male   Female Male   Female
+Levels: Male Female</code></pre>
+</div>
+</div>
+<p>yada yada yada</p>
+</section>
+</section>
+<section id="combining-years" class="level2">
+<h2 class="anchored" data-anchor-id="combining-years">Combining Years</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create function to specify multiple years of survey data</span></span>
+<span id="cb117-2"><a href="#cb117-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb117-3"><a href="#cb117-3" aria-hidden="true" tabindex="-1"></a>query_census_years <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb117-4"><a href="#cb117-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">years =</span> <span class="fu">c</span>(<span class="dv">2021</span>, <span class="dv">2022</span>, <span class="dv">2023</span>, <span class="dv">2024</span>),</span>
+<span id="cb117-5"><a href="#cb117-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">numeric_vars =</span> <span class="fu">c</span>(<span class="st">"AGEP"</span>, <span class="st">"PWGTP"</span>),</span>
+<span id="cb117-6"><a href="#cb117-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">categorical_vars =</span> <span class="st">"SEX"</span>,</span>
+<span id="cb117-7"><a href="#cb117-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">geography =</span> <span class="st">"State"</span>,</span>
+<span id="cb117-8"><a href="#cb117-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">specific_geography =</span> <span class="cn">NULL</span>,</span>
+<span id="cb117-9"><a href="#cb117-9" aria-hidden="true" tabindex="-1"></a>    api_key</span>
+<span id="cb117-10"><a href="#cb117-10" aria-hidden="true" tabindex="-1"></a>) {</span>
+<span id="cb117-11"><a href="#cb117-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb117-12"><a href="#cb117-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># check for valid years</span></span>
+<span id="cb117-13"><a href="#cb117-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">all</span>(years <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2021</span>, <span class="dv">2022</span>, <span class="dv">2023</span>, <span class="dv">2024</span>))) {</span>
+<span id="cb117-14"><a href="#cb117-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"years must be in 2021, 2022, 2023, or 2024"</span>)</span>
+<span id="cb117-15"><a href="#cb117-15" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb117-16"><a href="#cb117-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb117-17"><a href="#cb117-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># make sure at least one year in specified </span></span>
+<span id="cb117-18"><a href="#cb117-18" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(years) <span class="sc">&lt;</span> <span class="dv">1</span>) {</span>
+<span id="cb117-19"><a href="#cb117-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"At least one year must be specified."</span>)</span>
+<span id="cb117-20"><a href="#cb117-20" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb117-21"><a href="#cb117-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb117-22"><a href="#cb117-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create a list to store each year's data</span></span>
+<span id="cb117-23"><a href="#cb117-23" aria-hidden="true" tabindex="-1"></a>  data_list <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb117-24"><a href="#cb117-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb117-25"><a href="#cb117-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># query each year</span></span>
+<span id="cb117-26"><a href="#cb117-26" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(years)) {</span>
+<span id="cb117-27"><a href="#cb117-27" aria-hidden="true" tabindex="-1"></a>    data_list[[i]] <span class="ot">&lt;-</span> <span class="fu">query_census</span>(</span>
+<span id="cb117-28"><a href="#cb117-28" aria-hidden="true" tabindex="-1"></a>      <span class="at">year =</span> years[i],</span>
+<span id="cb117-29"><a href="#cb117-29" aria-hidden="true" tabindex="-1"></a>      <span class="at">numeric_vars =</span> numeric_vars,</span>
+<span id="cb117-30"><a href="#cb117-30" aria-hidden="true" tabindex="-1"></a>      <span class="at">categorical_vars =</span> categorical_vars,</span>
+<span id="cb117-31"><a href="#cb117-31" aria-hidden="true" tabindex="-1"></a>      <span class="at">geography =</span> geography,</span>
+<span id="cb117-32"><a href="#cb117-32" aria-hidden="true" tabindex="-1"></a>      <span class="at">specific_geography =</span> specific_geography,</span>
+<span id="cb117-33"><a href="#cb117-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">api_key =</span> api_key</span>
+<span id="cb117-34"><a href="#cb117-34" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb117-35"><a href="#cb117-35" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb117-36"><a href="#cb117-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># add year variable</span></span>
+<span id="cb117-37"><a href="#cb117-37" aria-hidden="true" tabindex="-1"></a>    data_list[[i]]<span class="sc">$</span>year <span class="ot">&lt;-</span> years[i]</span>
+<span id="cb117-38"><a href="#cb117-38" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb117-39"><a href="#cb117-39" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb117-40"><a href="#cb117-40" aria-hidden="true" tabindex="-1"></a>  <span class="co"># combine all years into one tibble</span></span>
+<span id="cb117-41"><a href="#cb117-41" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(data_list)</span>
+<span id="cb117-42"><a href="#cb117-42" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb117-43"><a href="#cb117-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data)</span>
+<span id="cb117-44"><a href="#cb117-44" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb118"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test function</span></span>
+<span id="cb118-2"><a href="#cb118-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb118-3"><a href="#cb118-3" aria-hidden="true" tabindex="-1"></a>combined_test <span class="ot">&lt;-</span> <span class="fu">query_census_years</span>(</span>
+<span id="cb118-4"><a href="#cb118-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">years =</span> <span class="fu">c</span>(<span class="dv">2022</span>, <span class="dv">2024</span>),</span>
+<span id="cb118-5"><a href="#cb118-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">api_key =</span> api_key</span>
+<span id="cb118-6"><a href="#cb118-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb118-7"><a href="#cb118-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(combined_test)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 5
+   AGEP PWGTP SEX    state  year
+  &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;  &lt;chr&gt; &lt;dbl&gt;
+1    80    45 Male   37     2022
+2    60     7 Male   37     2022
+3    18    64 Male   37     2022
+4    18    56 Male   37     2022
+5    87    50 Female 37     2022
+6    18    56 Male   37     2022</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb120"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(combined_test<span class="sc">$</span>year)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  2022   2024 
+109230 114270 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb122"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(combined_test)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "census"     "tbl_df"     "tbl"        "data.frame"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb124"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a>combined_all_years <span class="ot">&lt;-</span> <span class="fu">query_census_years</span>(</span>
+<span id="cb124-2"><a href="#cb124-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">years =</span> <span class="fu">c</span>(<span class="dv">2021</span>, <span class="dv">2022</span>, <span class="dv">2023</span>, <span class="dv">2024</span>),</span>
+<span id="cb124-3"><a href="#cb124-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">api_key =</span> api_key</span>
+<span id="cb124-4"><a href="#cb124-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb124-5"><a href="#cb124-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(combined_all_years)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 5
+   AGEP PWGTP SEX    state  year
+  &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;  &lt;chr&gt; &lt;dbl&gt;
+1    21    78 Male   37     2021
+2    58     9 Female 37     2021
+3    20    32 Female 37     2021
+4    40     6 Female 37     2021
+5    21   119 Male   37     2021
+6    20    65 Male   37     2021</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb126"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(combined_all_years<span class="sc">$</span>year)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  2021   2022   2023   2024 
+104337 109230 111920 114270 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb128"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a>combined_test2 <span class="ot">&lt;-</span> <span class="fu">query_census_years</span>(</span>
+<span id="cb128-2"><a href="#cb128-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">years =</span> <span class="fu">c</span>(<span class="dv">2022</span>, <span class="dv">2023</span>, <span class="dv">2024</span>),</span>
+<span id="cb128-3"><a href="#cb128-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">numeric_vars =</span> <span class="fu">c</span>(<span class="st">"GASP"</span>, <span class="st">"PWGTP"</span>),</span>
+<span id="cb128-4"><a href="#cb128-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">categorical_vars =</span> <span class="fu">c</span>(<span class="st">"FER"</span>, <span class="st">"SEX"</span>),</span>
+<span id="cb128-5"><a href="#cb128-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">geography =</span> <span class="st">"State"</span>,</span>
+<span id="cb128-6"><a href="#cb128-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">specific_geography =</span> <span class="st">"California"</span>,</span>
+<span id="cb128-7"><a href="#cb128-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">api_key =</span> api_key</span>
+<span id="cb128-8"><a href="#cb128-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb128-9"><a href="#cb128-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(combined_test2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 6
+   GASP PWGTP FER                                              SEX   state  year
+  &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;                                            &lt;fct&gt; &lt;chr&gt; &lt;dbl&gt;
+1     3    14 N/A (less than 15 years/greater than 50 years/ … Fema… 06     2022
+2     3    27 N/A (less than 15 years/greater than 50 years/ … Male  06     2022
+3     3    70 N/A (less than 15 years/greater than 50 years/ … Male  06     2022
+4     3    22 No                                               Fema… 06     2022
+5     3     8 No                                               Fema… 06     2022
+6     3    49 N/A (less than 15 years/greater than 50 years/ … Male  06     2022</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb130"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb130-1"><a href="#cb130-1" aria-hidden="true" tabindex="-1"></a>combined_all_states <span class="ot">&lt;-</span> <span class="fu">query_census_years</span>(</span>
+<span id="cb130-2"><a href="#cb130-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">years =</span> <span class="fu">c</span>(<span class="dv">2023</span>, <span class="dv">2024</span>),</span>
+<span id="cb130-3"><a href="#cb130-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">specific_geography =</span> <span class="st">"all"</span>,</span>
+<span id="cb130-4"><a href="#cb130-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">api_key =</span> api_key</span>
+<span id="cb130-5"><a href="#cb130-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb130-6"><a href="#cb130-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(combined_all_states<span class="sc">$</span>year)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+   2023    2024 
+3405809 3422888 </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="part-2-writing-a-generic-function-for-summarizing" class="level1">
+<h1>Part 2: Writing a Generic Function for Summarizing</h1>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
