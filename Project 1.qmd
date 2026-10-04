@@ -22,6 +22,7 @@ yada yada yada
 library(httr)
 library(jsonlite)
 library(tidyverse)
+library(lubridate)
 ```
 
 ## Explore PUMS Census API
@@ -73,7 +74,7 @@ head(data)
 
 query_api <- function(url) {
   
-  response <- GET(url1)
+  response <- GET(url)
   
   data <- fromJSON(rawToChar(response$content))
   
@@ -155,7 +156,6 @@ works! so do on 2021-2023 data as well + yada yada
 data_2024 <- get_var(2024)
 names(data_2024)
 
-
 data_2023 <- get_var(2023)
 names(data_2023)
 
@@ -175,7 +175,156 @@ saveRDS(data_2021, "data/data_2021.rds")
 
 ## Parsing API Data
 
-yada yada 
+### Helper Functions
+
+```{r}
+# make helper function to return available geography 
+
+# inspect for specific_geography
+data_2024$STATE$values
+data_2024$REGION$values
+data_2024$DIVISION$values
+
+state_values <- data_2024$STATE$values$item
+state_values
+names(state_values)
+unlist(state_values) # turn nested list into a simplified list
+
+get_geo <- function(year, geography) {
+  
+  # load variable values for selected year
+  var_data <- readRDS(
+    paste0(
+      "data/data_",
+      year,
+      ".rds"
+    )
+  )
+  
+  # get selected geography & match them
+  geo_data <- var_data[[toupper(geography)]] # converts to uppercase 
+  
+  # return geography codes and names
+  geo_val <- unlist(geo_data$values$item)
+  
+  # remove Puerto Rico using `!grepl` which means "does not contain"
+  geo_val <- geo_val[!grepl("Puerto Rico", geo_val)
+                     ]
+  
+  return(geo_val)
+}
+
+# test helper function
+get_geo(2024, "State")
+get_geo(2023, "Region")
+get_geo(2022, "Division")
+```
+
+```{r}
+# make helper function that parses the time strings to return midpoint as time value
+
+parse_time <- function(x, time_values) {
+  
+  # convert values to character to match metadata names
+  x <- as.character(x)
+  
+  # return missing time values as NA
+  x[x == "0"] <- NA
+  
+  # add leading 0's so codes match Census metadata
+  x <- ifelse(
+    is.na(x), 
+    NA, 
+    sprintf("%03d", as.numeric(x)
+            )
+    )
+  
+  # get time interval for each code
+  intervals <- unname(time_values[x])
+  
+  # extract beginning and ending times
+  start <- sub(" to .*", "", intervals)
+  end <- sub(".* to ", "", intervals)
+  
+  # change Census AM/PM to standard AM/PM
+  start <- gsub("a\\.m\\.", "AM", start)
+  start <- gsub("p\\.m\\.", "PM", start)
+  end <- gsub("a\\.m\\.", "AM", end)
+  end <- gsub("p\\.m\\.", "PM", end)
+  
+  # convert times to POSIXct
+  start_time <- strptime(start, format = "%I:%M %p")
+  end_time <- strptime(end, format = "%I:%M %p")
+  
+  # calculate midpoint of each interval
+  midpoint <- start_time + (end_time - start_time) / 2
+  
+  # return only time of day
+  midpoint <- hms::as_hms(midpoint)
+  
+  return(midpoint)
+}
+
+```
+
+```{r}
+# JWAP metadata
+url <- paste0(
+  "https://api.census.gov/data/2024/acs/acs1/pums/variables/JWAP.json"
+)
+
+response <- GET(url)
+
+fromJSON(rawToChar(response$content))
+
+jwap_metadata <- fromJSON(rawToChar(response$content))
+
+jwap_values <- unlist(jwap_metadata$values$item)
+
+head(jwap_values)
+
+arrive_test <- query_census(
+  numeric_vars = c("JWAP", "PWGTP"),
+  api_key = api_key
+)
+head(arrive_test$JWAP)
+
+jwap_time <- parse_time(
+  arrive_test$JWAP,
+  jwap_values
+)
+head(jwap_time)
+```
+
+```{r}
+# JWDP metadata 
+
+url <- paste0(
+  "https://api.census.gov/data/2024/acs/acs1/pums/variables/JWDP.json"
+)
+
+response_jwdp <- GET(url)
+
+jwdp_metadata <- fromJSON(rawToChar(response_jwdp$content))
+
+jwdp_values <- unlist(jwdp_metadata$values$item)
+
+head(jwdp_values)
+
+depart_test <- query_census(
+  numeric_vars = c("JWDP", "PWGTP"),
+  api_key = api_key
+)
+
+jwdp_time <- parse_time(
+  depart_test$JWDP,
+  jwdp_values
+)
+
+head(jwdp_time)
+```
+
+### Main Function
 ```{r}
 # create main parsing function 
 
@@ -218,7 +367,7 @@ query_census <- function(
   
   # check
   if (!all(categorical_vars %in% allowed_cat)) {
-    stop("Invalid categorical variable. Choose from FER, HHL, SCH. SCHL, and SEX.")
+    stop("Invalid categorical variable. Choose from FER, HHL, SCH, SCHL, and SEX.")
   }
   
   # make sure at least one categorical variable is returned 
@@ -299,101 +448,193 @@ query_census <- function(
   # query API
   data <- query_api(url2)
   
+  # convert numeric variables
+  for (var in numeric_vars) {
+    if (var %in% c("JWAP", "JWDP")) {
+      
+      # get metadata
+      time_url <- paste0(
+        "https://api.census.gov/data/",
+      year,
+      "/acs/acs1/pums/variables/",
+      var,
+      ".json"
+      )
+      
+      time_response <- GET(time_url)
+      
+      time_metadata <- fromJSON(
+        rawToChar(time_response$content)
+        )
+      
+      time_values <- unlist(
+        time_metadata$values$item
+      )
+      
+      # convert Census time codes to midpoint times
+      data[[var]] <- parse_time(
+        data[[var]],
+        time_values
+      )
+    } else {
+      
+      # convert regular numeric variables to numeric
+      data[[var]] <- as.numeric(data[[var]])
+    }
+  }
+  
+  # load variable metadata
+  var_data <- readRDS(paste0("data/data_", year, ".rds"))
+  
+  # convert categorical variables to factors
+  for (var in categorical_vars) {
+    levels <- unlist(var_data[[var]]$values$item)
+    
+    data[[var]] <- factor(
+      data[[var]],
+      levels = names(levels),
+      labels = levels
+    )
+  }
+  
+  # give the data the census class
+  class(data) <- c("census", class(data))
+  
   return(data)
 }
+```
 
-# check this function
+### Function Tests
+```{r}
+# test years
 
-query_census(year = 2002)
+# valid
+test_2021 <- query_census(
+  year = 2021,
+  api_key = api_key
+  )
+head(test_2021)
 
-query_census(numeric_vars = c("AGEP", "PWGTP")
-             )
+test_2023 <- query_census(
+  year = 2023,
+  api_key = api_key
+  )
+head(test_2023)
 
-query_census(numeric_vars = c("BDSP", "PWGTP")
-             )
+# invalid
+query_census(
+  year = 2002,
+  api_key = api_key
+  )
 
-query_census(numeric_vars = c("AGEP", "GASP")
-             )
+# test numeric variables
 
-query_census(numeric_vars = "PWGTP")
+# valid
+test_numeric <- query_census(
+  numeric_vars = c("AGEP", "PWGTP"),
+  api_key = api_key
+  )
+head(test_numeric)
 
-query_census(categorical_vars = "WAOB")
+# invalid numeric variables
+query_census(
+  numeric_vars = c("BDSP", "PWGTP"),
+  api_key = api_key
+  )
 
 query_census(
+  numeric_vars = c("AGEP", "GASP"),
+  api_key = api_key
+  )
+
+query_census(
+  numeric_vars = "PWGTP",
+  api_key = api_key
+  )
+
+# test categorical variables
+
+# valid
+test_categorical <- query_census(
   numeric_vars = c("GASP", "PWGTP"),
-  categorical_vars = c("FER", "SEX")
-)
+  categorical_vars = c("FER", "SEX"),
+  api_key = api_key
+  )
 
-query_census(geography = "Region")
+head(test_categorical)
+class(test_categorical$SEX)
+levels(test_categorical$SEX)
 
-query_census(geography = "All")
+# invalid
+query_census(
+  categorical_vars = "WAOB",
+  api_key = api_key
+  )
 
-query_census(geography = c("Region", "Division")
-             )
+# test geography
 
-query_census(specific_geography = "Puerto Rico")
+# valid 
+test_geo <- query_census(
+  geography = "Region",
+  specific_geography = "South",
+  api_key = api_key
+  )
+head(test_geo)
 
-query_census(specific_geography = "Cuba")
-
-test1 <- query_census(api_key = api_key)
-head(test1)
-
-test2 <- query_census(
+test_geo2 <- query_census(
   specific_geography = "California",
   api_key = api_key
-)
-head(test2)
+  )
+head(test_geo2)
 
-test3 <- query_census(
-  specific_geography = "all",
+# invalid geography
+query_census(
+  geography = "All",
+  api_key = api_key
+  )
+
+query_census(
+  geography = c("Region", "Division"),
+  api_key = api_key
+  )
+
+query_census(
+  specific_geography = "Puerto Rico",
+  api_key = api_key
+  )
+
+query_census(
+  specific_geography = "Cuba",
+  api_key = api_key
+  )
+
+# test default query
+test_default <- query_census(
+  api_key = api_key
+  )
+head(test_default)
+
+# test time variable
+test_time <- query_census(
+  numeric_vars = c("JWAP", "PWGTP"),
   api_key = api_key
 )
-head(test3)
+head(test_time$JWAP)
+class(test_time$JWAP)
+
+# test census class
+class(test_time)
+
+# general test
+gen_test <- query_census(
+  numeric_vars = c("JWAP", "PWGTP"),
+  api_key = api_key
+)
+class(gen_test$JWAP)
+class(gen_test$SEX)
+levels(gen_test$SEX)
+head(gen_test$SEX)
 ```
 
 yada yada yada
-
-```{r}
-# make helper function to return available geography 
-
-# inspect for specific_geography
-data_2024$STATE$values
-data_2024$REGION$values
-data_2024$DIVISION$values
-
-state_values <- data_2024$STATE$values$item
-state_values
-names(state_values)
-unlist(state_values) # turn nested list into a simplified list
-
-get_geo <- function(year, geography) {
-  
-  # load variable values for selected year
-  var_data <- readRDS(
-    paste0(
-      "data/data_",
-      year,
-      ".rds"
-    )
-  )
-  
-  # get selected geography & match them
-  geo_data <- var_data[[toupper(geography)]] # converts to uppercase 
-  
-  # return geography codes and names
-  geo_val <- unlist(geo_data$values$item)
-  
-  # remove Puerto Rico using `!grepl` which means "does not contain"
-  geo_val <- geo_val[!grepl("Puerto Rico", geo_val)
-                     ]
-  
-  return(geo_val)
-}
-
-# test helper function
-get_geo(2024, "State")
-get_geo(2023, "Region")
-get_geo(2022, "Division")
-```
-
 
