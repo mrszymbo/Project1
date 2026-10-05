@@ -27,6 +27,7 @@ library(httr)
 library(jsonlite)
 library(tidyverse)
 library(lubridate)
+library(quantreg)
 ```
 
 ## Explore PUMS Census API
@@ -175,6 +176,18 @@ saveRDS(data_2024, "data/data_2024.rds")
 saveRDS(data_2023, "data/data_2023.rds")
 saveRDS(data_2022, "data/data_2022.rds")
 saveRDS(data_2021, "data/data_2021.rds")
+```
+
+### PUMS Variable Reference
+
+```{r}
+var_ref <- tibble(
+  variable = PUMS_var,
+  description = sapply(PUMS_var, function(x) {
+    data_2024[[x]]$label
+  })
+)
+var_ref
 ```
 
 ## Parsing API Data
@@ -735,3 +748,164 @@ table(combined_all_states$year)
 ```
 
 # Part 2: Writing a Generic Function for Summarizing
+
+```{r}
+# create a function that 
+# produces means & sds for numeric variables & 
+# counts for categorical variables 
+
+summary.census <- function(
+    object,
+    numeric_vars = NULL,
+    categorical_vars = NULL
+) {
+  # default numeric variables 
+  if (is.null(numeric_vars)) {
+    numeric_vars <- names(object) [
+      sapply(object, is.numeric)
+    ]
+    
+    numeric_vars <- setdiff(
+      numeric_vars,
+      c("PWGTP", "JWAP", "JWDP", "year")
+    )
+  }
+  
+  # default categorical variables
+  if (is.null(categorical_vars)) {
+    categorical_vars <- names(object) [
+      sapply(object, is.factor)
+    ]
+    
+    # include year as a categorical variable
+    if ("year" %in% names(object)) {
+      categorical_vars <- unique(
+        c(categorical_vars, "year")
+      )
+    }
+  }
+  
+  # create list for numeric summaries
+  numeric_summary <- list()
+  
+  # calculate weighted mean and standard deviation
+  for (var in numeric_vars) {
+    x <- object[[var]]
+    w <- object$PWGTP
+    
+    keep <- !is.na(x) & !is.na(w)
+    x <- x[keep]
+    w <- w[keep]
+    
+    weighted_mean <- sum(x * w) / sum(w)
+    
+    weighted_sd <- sqrt(
+      sum(x^2 * w) / sum(w) -
+        weighted_mean^2
+    )
+    
+    numeric_summary[[var]] <- c(
+      mean = weighted_mean,
+      sd = weighted_sd
+    )
+  }
+  
+  # create list for categorical summaries
+  categorical_summary <- list()
+  
+  # calculate weighted counts
+  for (var in categorical_vars) {
+    x <- object[[var]]
+    
+    categorical_summary[[var]] <- tapply(
+      object$PWGTP,
+      x,
+      sum,
+      na.rm = TRUE
+    )
+  }
+  
+  # return named lists
+  return(
+    list(
+      numeric = numeric_summary,
+      categorical = categorical_summary
+    )
+  )
+}
+```
+
+```{r}
+# test function
+
+summary(combined_test)
+
+summary(
+  combined_test,
+  numeric_vars = "AGEP",
+  categorical_vars = c("SEX", "year")
+)
+
+summary(
+  combined_test,
+  numeric_vars = c("AGEP", "GRPIP"),
+  categorical_vars = "SEX"
+)
+```
+
+```{r}
+# create a generic plot() function that 
+# creates a boxplot of the numeric variable 
+# at the levels of the categorical variables 
+
+plot.census <- function(
+    object,
+    categorical_var,
+    numeric_var
+) {
+  
+  # make year a categorical variable 
+  if (categorical_var == "year") {
+    object$year <- factor(object$year)
+  }
+  
+  ggplot(
+    object,
+    aes(
+      x = get(categorical_var),
+      y = get(numeric_var),
+      weight = PWGTP
+    )
+  ) +
+    geom_boxplot(width = 0.6) +
+    labs(
+      x = categorical_var,
+      y = numeric_var,
+      title = paste(numeric_var, "by", categorical_var)
+    ) +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(face = "bold", size = 14),
+      plot.subtitle = element_text(size = 10),
+      axis.title = element_text(face = "bold"),
+      panel.grid.minor = element_blank()
+    )
+}
+```
+
+```{r}
+# test plot function
+
+plot(
+  combined_test,
+  categorical_var = "SEX",
+  numeric_var = "AGEP"
+)
+
+plot(
+  combined_test,
+  categorical_var = "year",
+  numeric_var = "AGEP"
+)
+```
+
