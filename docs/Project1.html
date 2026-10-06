@@ -658,7 +658,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
      "New England (Northeast region)" </code></pre>
 </div>
 </div>
-<p>The second helper function I created was <code>parse_time()</code>, which processes <code>JWAP</code> and <code>JWDP</code>. I had to use AI/LLMs to help figure this part out.</p>
+<p>The second helper function I created was <code>parse_time()</code>, which processes <code>JWAP</code> and <code>JWDP</code>. I had to use AI/LLMs to help figure this part out, but I think it may have become more complicated than it needed to be.</p>
 <p>I first converted the codes to character values so they could be matched to the names in the metadata. The code <code>"0"</code> represents a missing value, so I changed those values to return as <code>NA</code>. I then used <code>sprintf()</code> to add leading zeroes to the codes so that they matched the three-digit codes used in the metadata.</p>
 <p>Then I used the codes to look up the corresponding time intervals. <code>sub()</code> separates the beginning and ending times of each interval. I converted those strings into time values with <code>strptime()</code>, then calculated the midpoint by adding half of the difference between the ending and beginning times to the starting time. I then used <code>hms::as_hms()</code> to keep only the time of day, so that the returned value represents the approximate midpoint of the five-minute interval rather than the original Census code.</p>
 <div class="cell">
@@ -1411,75 +1411,72 @@ Levels: Male Female</code></pre>
 <span id="cb112-13"><a href="#cb112-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">sapply</span>(object, is.numeric)</span>
 <span id="cb112-14"><a href="#cb112-14" aria-hidden="true" tabindex="-1"></a>    ]</span>
 <span id="cb112-15"><a href="#cb112-15" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb112-16"><a href="#cb112-16" aria-hidden="true" tabindex="-1"></a>    numeric_vars <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(</span>
-<span id="cb112-17"><a href="#cb112-17" aria-hidden="true" tabindex="-1"></a>      numeric_vars,</span>
-<span id="cb112-18"><a href="#cb112-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="st">"PWGTP"</span>, <span class="st">"JWAP"</span>, <span class="st">"JWDP"</span>, <span class="st">"year"</span>)</span>
-<span id="cb112-19"><a href="#cb112-19" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb112-20"><a href="#cb112-20" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb112-21"><a href="#cb112-21" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb112-22"><a href="#cb112-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># default categorical variables</span></span>
-<span id="cb112-23"><a href="#cb112-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(categorical_vars)) {</span>
-<span id="cb112-24"><a href="#cb112-24" aria-hidden="true" tabindex="-1"></a>    categorical_vars <span class="ot">&lt;-</span> <span class="fu">names</span>(object) [</span>
-<span id="cb112-25"><a href="#cb112-25" aria-hidden="true" tabindex="-1"></a>      <span class="fu">sapply</span>(object, is.factor)</span>
-<span id="cb112-26"><a href="#cb112-26" aria-hidden="true" tabindex="-1"></a>    ]</span>
-<span id="cb112-27"><a href="#cb112-27" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb112-28"><a href="#cb112-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># include year as a categorical variable</span></span>
-<span id="cb112-29"><a href="#cb112-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="st">"year"</span> <span class="sc">%in%</span> <span class="fu">names</span>(object)) {</span>
-<span id="cb112-30"><a href="#cb112-30" aria-hidden="true" tabindex="-1"></a>      categorical_vars <span class="ot">&lt;-</span> <span class="fu">unique</span>(</span>
-<span id="cb112-31"><a href="#cb112-31" aria-hidden="true" tabindex="-1"></a>        <span class="fu">c</span>(categorical_vars, <span class="st">"year"</span>)</span>
-<span id="cb112-32"><a href="#cb112-32" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb112-33"><a href="#cb112-33" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb112-34"><a href="#cb112-34" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb112-16"><a href="#cb112-16" aria-hidden="true" tabindex="-1"></a>    numeric_vars <span class="ot">&lt;-</span> numeric_vars[<span class="sc">!</span>numeric_vars <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"PWGTP"</span>, <span class="st">"JWAP"</span>, <span class="st">"JWDP"</span>, <span class="st">"year"</span>)]</span>
+<span id="cb112-17"><a href="#cb112-17" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb112-18"><a href="#cb112-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb112-19"><a href="#cb112-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># default categorical variables</span></span>
+<span id="cb112-20"><a href="#cb112-20" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(categorical_vars)) {</span>
+<span id="cb112-21"><a href="#cb112-21" aria-hidden="true" tabindex="-1"></a>    categorical_vars <span class="ot">&lt;-</span> <span class="fu">names</span>(object) [</span>
+<span id="cb112-22"><a href="#cb112-22" aria-hidden="true" tabindex="-1"></a>      <span class="fu">sapply</span>(object, is.factor)</span>
+<span id="cb112-23"><a href="#cb112-23" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb112-24"><a href="#cb112-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb112-25"><a href="#cb112-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># include year as a categorical variable</span></span>
+<span id="cb112-26"><a href="#cb112-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="st">"year"</span> <span class="sc">%in%</span> <span class="fu">names</span>(object)) {</span>
+<span id="cb112-27"><a href="#cb112-27" aria-hidden="true" tabindex="-1"></a>      categorical_vars <span class="ot">&lt;-</span> <span class="fu">unique</span>(</span>
+<span id="cb112-28"><a href="#cb112-28" aria-hidden="true" tabindex="-1"></a>        <span class="fu">c</span>(categorical_vars, <span class="st">"year"</span>)</span>
+<span id="cb112-29"><a href="#cb112-29" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb112-30"><a href="#cb112-30" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb112-31"><a href="#cb112-31" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb112-32"><a href="#cb112-32" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb112-33"><a href="#cb112-33" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create list for numeric summaries</span></span>
+<span id="cb112-34"><a href="#cb112-34" aria-hidden="true" tabindex="-1"></a>  numeric_summary <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
 <span id="cb112-35"><a href="#cb112-35" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb112-36"><a href="#cb112-36" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create list for numeric summaries</span></span>
-<span id="cb112-37"><a href="#cb112-37" aria-hidden="true" tabindex="-1"></a>  numeric_summary <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb112-38"><a href="#cb112-38" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb112-39"><a href="#cb112-39" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate weighted mean and standard deviation</span></span>
-<span id="cb112-40"><a href="#cb112-40" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (var <span class="cf">in</span> numeric_vars) {</span>
-<span id="cb112-41"><a href="#cb112-41" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> object[[var]]</span>
-<span id="cb112-42"><a href="#cb112-42" aria-hidden="true" tabindex="-1"></a>    w <span class="ot">&lt;-</span> object<span class="sc">$</span>PWGTP</span>
-<span id="cb112-43"><a href="#cb112-43" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb112-44"><a href="#cb112-44" aria-hidden="true" tabindex="-1"></a>    keep <span class="ot">&lt;-</span> <span class="sc">!</span><span class="fu">is.na</span>(x) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(w)</span>
-<span id="cb112-45"><a href="#cb112-45" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> x[keep]</span>
-<span id="cb112-46"><a href="#cb112-46" aria-hidden="true" tabindex="-1"></a>    w <span class="ot">&lt;-</span> w[keep]</span>
-<span id="cb112-47"><a href="#cb112-47" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb112-48"><a href="#cb112-48" aria-hidden="true" tabindex="-1"></a>    weighted_mean <span class="ot">&lt;-</span> <span class="fu">sum</span>(x <span class="sc">*</span> w) <span class="sc">/</span> <span class="fu">sum</span>(w)</span>
-<span id="cb112-49"><a href="#cb112-49" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb112-50"><a href="#cb112-50" aria-hidden="true" tabindex="-1"></a>    weighted_sd <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(</span>
-<span id="cb112-51"><a href="#cb112-51" aria-hidden="true" tabindex="-1"></a>      <span class="fu">sum</span>(x<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> w) <span class="sc">/</span> <span class="fu">sum</span>(w) <span class="sc">-</span></span>
-<span id="cb112-52"><a href="#cb112-52" aria-hidden="true" tabindex="-1"></a>        weighted_mean<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb112-53"><a href="#cb112-53" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb112-54"><a href="#cb112-54" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb112-55"><a href="#cb112-55" aria-hidden="true" tabindex="-1"></a>    numeric_summary[[var]] <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb112-56"><a href="#cb112-56" aria-hidden="true" tabindex="-1"></a>      <span class="at">mean =</span> weighted_mean,</span>
-<span id="cb112-57"><a href="#cb112-57" aria-hidden="true" tabindex="-1"></a>      <span class="at">sd =</span> weighted_sd</span>
-<span id="cb112-58"><a href="#cb112-58" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb112-59"><a href="#cb112-59" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb112-36"><a href="#cb112-36" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate weighted mean and standard deviation</span></span>
+<span id="cb112-37"><a href="#cb112-37" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (var <span class="cf">in</span> numeric_vars) {</span>
+<span id="cb112-38"><a href="#cb112-38" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> object[[var]]</span>
+<span id="cb112-39"><a href="#cb112-39" aria-hidden="true" tabindex="-1"></a>    w <span class="ot">&lt;-</span> object<span class="sc">$</span>PWGTP</span>
+<span id="cb112-40"><a href="#cb112-40" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb112-41"><a href="#cb112-41" aria-hidden="true" tabindex="-1"></a>    keep <span class="ot">&lt;-</span> <span class="sc">!</span><span class="fu">is.na</span>(x) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(w)</span>
+<span id="cb112-42"><a href="#cb112-42" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> x[keep]</span>
+<span id="cb112-43"><a href="#cb112-43" aria-hidden="true" tabindex="-1"></a>    w <span class="ot">&lt;-</span> w[keep]</span>
+<span id="cb112-44"><a href="#cb112-44" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb112-45"><a href="#cb112-45" aria-hidden="true" tabindex="-1"></a>    weighted_mean <span class="ot">&lt;-</span> <span class="fu">sum</span>(x <span class="sc">*</span> w) <span class="sc">/</span> <span class="fu">sum</span>(w)</span>
+<span id="cb112-46"><a href="#cb112-46" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb112-47"><a href="#cb112-47" aria-hidden="true" tabindex="-1"></a>    weighted_sd <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(</span>
+<span id="cb112-48"><a href="#cb112-48" aria-hidden="true" tabindex="-1"></a>      <span class="fu">sum</span>(x<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> w) <span class="sc">/</span> <span class="fu">sum</span>(w) <span class="sc">-</span></span>
+<span id="cb112-49"><a href="#cb112-49" aria-hidden="true" tabindex="-1"></a>        weighted_mean<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb112-50"><a href="#cb112-50" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb112-51"><a href="#cb112-51" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb112-52"><a href="#cb112-52" aria-hidden="true" tabindex="-1"></a>    numeric_summary[[var]] <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb112-53"><a href="#cb112-53" aria-hidden="true" tabindex="-1"></a>      <span class="at">mean =</span> weighted_mean,</span>
+<span id="cb112-54"><a href="#cb112-54" aria-hidden="true" tabindex="-1"></a>      <span class="at">sd =</span> weighted_sd</span>
+<span id="cb112-55"><a href="#cb112-55" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb112-56"><a href="#cb112-56" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb112-57"><a href="#cb112-57" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb112-58"><a href="#cb112-58" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create list for categorical summaries</span></span>
+<span id="cb112-59"><a href="#cb112-59" aria-hidden="true" tabindex="-1"></a>  categorical_summary <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
 <span id="cb112-60"><a href="#cb112-60" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb112-61"><a href="#cb112-61" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create list for categorical summaries</span></span>
-<span id="cb112-62"><a href="#cb112-62" aria-hidden="true" tabindex="-1"></a>  categorical_summary <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb112-63"><a href="#cb112-63" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb112-64"><a href="#cb112-64" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate weighted counts</span></span>
-<span id="cb112-65"><a href="#cb112-65" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (var <span class="cf">in</span> categorical_vars) {</span>
-<span id="cb112-66"><a href="#cb112-66" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> object[[var]]</span>
-<span id="cb112-67"><a href="#cb112-67" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb112-68"><a href="#cb112-68" aria-hidden="true" tabindex="-1"></a>    <span class="co"># add person weights within each category</span></span>
-<span id="cb112-69"><a href="#cb112-69" aria-hidden="true" tabindex="-1"></a>    categorical_summary[[var]] <span class="ot">&lt;-</span> <span class="fu">tapply</span>(</span>
-<span id="cb112-70"><a href="#cb112-70" aria-hidden="true" tabindex="-1"></a>      object<span class="sc">$</span>PWGTP,</span>
-<span id="cb112-71"><a href="#cb112-71" aria-hidden="true" tabindex="-1"></a>      x,</span>
-<span id="cb112-72"><a href="#cb112-72" aria-hidden="true" tabindex="-1"></a>      sum,</span>
-<span id="cb112-73"><a href="#cb112-73" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
-<span id="cb112-74"><a href="#cb112-74" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb112-75"><a href="#cb112-75" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb112-76"><a href="#cb112-76" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb112-77"><a href="#cb112-77" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return named lists</span></span>
-<span id="cb112-78"><a href="#cb112-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(</span>
-<span id="cb112-79"><a href="#cb112-79" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list</span>(</span>
-<span id="cb112-80"><a href="#cb112-80" aria-hidden="true" tabindex="-1"></a>      <span class="at">numeric =</span> numeric_summary,</span>
-<span id="cb112-81"><a href="#cb112-81" aria-hidden="true" tabindex="-1"></a>      <span class="at">categorical =</span> categorical_summary</span>
-<span id="cb112-82"><a href="#cb112-82" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb112-83"><a href="#cb112-83" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb112-84"><a href="#cb112-84" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb112-61"><a href="#cb112-61" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate weighted counts</span></span>
+<span id="cb112-62"><a href="#cb112-62" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (var <span class="cf">in</span> categorical_vars) {</span>
+<span id="cb112-63"><a href="#cb112-63" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> object[[var]]</span>
+<span id="cb112-64"><a href="#cb112-64" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb112-65"><a href="#cb112-65" aria-hidden="true" tabindex="-1"></a>    <span class="co"># add person weights within each category</span></span>
+<span id="cb112-66"><a href="#cb112-66" aria-hidden="true" tabindex="-1"></a>    categorical_summary[[var]] <span class="ot">&lt;-</span> <span class="fu">tapply</span>(</span>
+<span id="cb112-67"><a href="#cb112-67" aria-hidden="true" tabindex="-1"></a>      object<span class="sc">$</span>PWGTP,</span>
+<span id="cb112-68"><a href="#cb112-68" aria-hidden="true" tabindex="-1"></a>      x,</span>
+<span id="cb112-69"><a href="#cb112-69" aria-hidden="true" tabindex="-1"></a>      sum,</span>
+<span id="cb112-70"><a href="#cb112-70" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
+<span id="cb112-71"><a href="#cb112-71" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb112-72"><a href="#cb112-72" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb112-73"><a href="#cb112-73" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb112-74"><a href="#cb112-74" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return named lists</span></span>
+<span id="cb112-75"><a href="#cb112-75" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(</span>
+<span id="cb112-76"><a href="#cb112-76" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list</span>(</span>
+<span id="cb112-77"><a href="#cb112-77" aria-hidden="true" tabindex="-1"></a>      <span class="at">numeric =</span> numeric_summary,</span>
+<span id="cb112-78"><a href="#cb112-78" aria-hidden="true" tabindex="-1"></a>      <span class="at">categorical =</span> categorical_summary</span>
+<span id="cb112-79"><a href="#cb112-79" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb112-80"><a href="#cb112-80" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb112-81"><a href="#cb112-81" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>I tested <code>summary_census()</code> to show that the function can summarize different combinations of data while using <code>PWGTP</code> to account for the survey weights. I first tested the default arguments so the function automatically identify the appropriate numeric and categorical variables. I then specified individual variables and combination of variables. I also tested it to ensure year is evaluated as a categorical variable.</p>
 <div class="cell">

@@ -250,7 +250,7 @@ get_geo(2023, "Region")
 get_geo(2022, "Division")
 ```
 
-The second helper function I created was `parse_time()`, which processes `JWAP` and  `JWDP`. I had to use AI/LLMs to help figure this part out.  
+The second helper function I created was `parse_time()`, which processes `JWAP` and  `JWDP`. I had to use AI/LLMs to help figure this part out, but I think it may have become more complicated than it needed to be.
 
 I first converted the codes to character values so they could be matched to the names in the metadata. The code `"0"` represents a missing value, so I changed those values to return as `NA`. I then used `sprintf()` to add leading zeroes to the codes so that they matched the three-digit codes used in the metadata. 
 
@@ -811,10 +811,7 @@ summary.census <- function(
       sapply(object, is.numeric)
     ]
     
-    numeric_vars <- setdiff(
-      numeric_vars,
-      c("PWGTP", "JWAP", "JWDP", "year")
-    )
+    numeric_vars <- numeric_vars[!numeric_vars %in% c("PWGTP", "JWAP", "JWDP", "year")]
   }
   
   # default categorical variables
@@ -1099,4 +1096,3 @@ In North Carolina, the  weighted counts for bachelor's, master's, and doctorate 
 The weighted counts also showed differences between males and females across several educational attainment categories. Females had higher weighted counts for bachelor's and master's degrees. The age distributions of males and females were relatively similar, although females had a slightly higher median age.
 
 These results show associations in the data instead of relationships. Since the educational attainment comparisons were based on weighted counts, using percentages would provide a more direct way to compare the distributions across years and between males and females. 
-
