@@ -187,7 +187,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <p>The goal of this project is to create reusable, generic functions for working with data from the U.S. Census Bureau’s Public Use Microdata Sample (PUMS) API. The functions should be able to retrieve data from different survey years, variables, and geographic areas, and return the data consistently without manually repeating the same data-processing steps.</p>
-<p>The PUMS API provides psuedo person-level records, but the records do not represent exactly one person but can represent multiple people. The <code>PWGTP</code> variable is a person weight, which indicates how many people a particular record represents. Because of this, the functions need to account for these weights.</p>
+<p>The PUMS API provides pseudo person-level records, but the records do not represent exactly one person but can represent multiple people. The <code>PWGTP</code> variable is a person weight, which indicates how many people a particular record represents. Because of this, the functions need to account for these weights.</p>
 <p>I focused on the PUMS data from 2021 through 2024, and excluded Puerto Rico as stated in the project instructions. My approach was to first understand how the Census API returned data, then create helper functions to process the metadata and special variables, and finally build and test functions that could retrieve, combine, summarize, and plot the data.</p>
 </section>
 <section id="part-1-data-processing" class="level1">
@@ -563,7 +563,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="parsing-api-data" class="level2">
 <h2 class="anchored" data-anchor-id="parsing-api-data">Parsing API Data</h2>
-<p>I then created helper functions for processing the returned data from the API. I created these helper functions as I was creating the main function (<code>query_census()</code>), but placed them before the main function. These helper functions were for two parts of the main function that required a little bit more work and therefore would keep the the main function looking neater.</p>
+<p>I then created helper functions for processing the returned data from the API. I created these helper functions as I was creating the main function (<code>query_census()</code>), but placed them before the main function. These helper functions were for two parts of the main function that required a little bit more work and therefore would keep the main function looking neater.</p>
 <section id="helper-functions" class="level3">
 <h3 class="anchored" data-anchor-id="helper-functions">Helper Functions</h3>
 <p>The first helper function I created was <code>get_geo()</code>, which would allow me to retrieve the appropriate geographic values from the metadata. It lets the main function accept a geographic name and determine the corresponding Census code. It also handles the difference between <code>ST</code> and <code>STATE</code> across the survey years and removes Puerto Rico as an acceptable value with <code>!grepl()</code>. Since <code>grepl()</code> returns <code>TRUE</code> when the text is found and <code>FALSE</code> when it is not, and I wanted to exclude Puerto Rico from the data, I put <code>!</code> before <code>grepl()</code> to reverse the results.</p>
@@ -834,61 +834,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb36-119"><a href="#cb36-119" aria-hidden="true" tabindex="-1"></a>  <span class="co"># query API</span></span>
 <span id="cb36-120"><a href="#cb36-120" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">query_api</span>(url2)</span>
 <span id="cb36-121"><a href="#cb36-121" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb36-122"><a href="#cb36-122" aria-hidden="true" tabindex="-1"></a>  <span class="co"># convert numeric variables</span></span>
-<span id="cb36-123"><a href="#cb36-123" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (var <span class="cf">in</span> numeric_vars) {</span>
-<span id="cb36-124"><a href="#cb36-124" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (var <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"JWAP"</span>, <span class="st">"JWDP"</span>)) {</span>
-<span id="cb36-125"><a href="#cb36-125" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb36-126"><a href="#cb36-126" aria-hidden="true" tabindex="-1"></a>      <span class="co"># get metadata</span></span>
-<span id="cb36-127"><a href="#cb36-127" aria-hidden="true" tabindex="-1"></a>      time_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(</span>
-<span id="cb36-128"><a href="#cb36-128" aria-hidden="true" tabindex="-1"></a>        <span class="st">"https://api.census.gov/data/"</span>,</span>
-<span id="cb36-129"><a href="#cb36-129" aria-hidden="true" tabindex="-1"></a>        year,</span>
-<span id="cb36-130"><a href="#cb36-130" aria-hidden="true" tabindex="-1"></a>        <span class="st">"/acs/acs1/pums/variables/"</span>,</span>
-<span id="cb36-131"><a href="#cb36-131" aria-hidden="true" tabindex="-1"></a>        var,</span>
-<span id="cb36-132"><a href="#cb36-132" aria-hidden="true" tabindex="-1"></a>        <span class="st">".json"</span></span>
-<span id="cb36-133"><a href="#cb36-133" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb36-134"><a href="#cb36-134" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb36-135"><a href="#cb36-135" aria-hidden="true" tabindex="-1"></a>      time_response <span class="ot">&lt;-</span> <span class="fu">GET</span>(time_url)</span>
-<span id="cb36-136"><a href="#cb36-136" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb36-137"><a href="#cb36-137" aria-hidden="true" tabindex="-1"></a>      time_metadata <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(</span>
-<span id="cb36-138"><a href="#cb36-138" aria-hidden="true" tabindex="-1"></a>        <span class="fu">rawToChar</span>(time_response<span class="sc">$</span>content)</span>
-<span id="cb36-139"><a href="#cb36-139" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb36-140"><a href="#cb36-140" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb36-141"><a href="#cb36-141" aria-hidden="true" tabindex="-1"></a>      <span class="co"># get time codes and their labels</span></span>
-<span id="cb36-142"><a href="#cb36-142" aria-hidden="true" tabindex="-1"></a>      time_values <span class="ot">&lt;-</span> <span class="fu">unlist</span>(</span>
-<span id="cb36-143"><a href="#cb36-143" aria-hidden="true" tabindex="-1"></a>        time_metadata<span class="sc">$</span>values<span class="sc">$</span>item</span>
-<span id="cb36-144"><a href="#cb36-144" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb36-145"><a href="#cb36-145" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb36-146"><a href="#cb36-146" aria-hidden="true" tabindex="-1"></a>      <span class="co"># convert time codes to midpoint times</span></span>
-<span id="cb36-147"><a href="#cb36-147" aria-hidden="true" tabindex="-1"></a>      data[[var]] <span class="ot">&lt;-</span> <span class="fu">parse_time</span>(</span>
-<span id="cb36-148"><a href="#cb36-148" aria-hidden="true" tabindex="-1"></a>        data[[var]],</span>
-<span id="cb36-149"><a href="#cb36-149" aria-hidden="true" tabindex="-1"></a>        time_values</span>
-<span id="cb36-150"><a href="#cb36-150" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb36-151"><a href="#cb36-151" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
-<span id="cb36-152"><a href="#cb36-152" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb36-153"><a href="#cb36-153" aria-hidden="true" tabindex="-1"></a>      <span class="co"># convert regular numeric variables to numeric</span></span>
-<span id="cb36-154"><a href="#cb36-154" aria-hidden="true" tabindex="-1"></a>      data[[var]] <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(data[[var]])</span>
-<span id="cb36-155"><a href="#cb36-155" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb36-156"><a href="#cb36-156" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb36-157"><a href="#cb36-157" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb36-158"><a href="#cb36-158" aria-hidden="true" tabindex="-1"></a>  <span class="co"># load variable metadata</span></span>
-<span id="cb36-159"><a href="#cb36-159" aria-hidden="true" tabindex="-1"></a>  var_data <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">paste0</span>(<span class="st">"data/data_"</span>, year, <span class="st">".rds"</span>))</span>
-<span id="cb36-160"><a href="#cb36-160" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb36-161"><a href="#cb36-161" aria-hidden="true" tabindex="-1"></a>  <span class="co"># convert categorical variables to factors</span></span>
-<span id="cb36-162"><a href="#cb36-162" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (var <span class="cf">in</span> categorical_vars) {</span>
-<span id="cb36-163"><a href="#cb36-163" aria-hidden="true" tabindex="-1"></a>    value_labels <span class="ot">&lt;-</span> <span class="fu">unlist</span>(var_data[[var]]<span class="sc">$</span>values<span class="sc">$</span>item)</span>
-<span id="cb36-164"><a href="#cb36-164" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb36-165"><a href="#cb36-165" aria-hidden="true" tabindex="-1"></a>    data[[var]] <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
-<span id="cb36-166"><a href="#cb36-166" aria-hidden="true" tabindex="-1"></a>      data[[var]],</span>
-<span id="cb36-167"><a href="#cb36-167" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">names</span>(value_labels),</span>
-<span id="cb36-168"><a href="#cb36-168" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> value_labels</span>
-<span id="cb36-169"><a href="#cb36-169" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb36-170"><a href="#cb36-170" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb36-171"><a href="#cb36-171" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb36-172"><a href="#cb36-172" aria-hidden="true" tabindex="-1"></a>  <span class="co"># give the data the census class</span></span>
-<span id="cb36-173"><a href="#cb36-173" aria-hidden="true" tabindex="-1"></a>  <span class="fu">class</span>(data) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"census"</span>, <span class="fu">class</span>(data))</span>
-<span id="cb36-174"><a href="#cb36-174" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb36-175"><a href="#cb36-175" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data)</span>
-<span id="cb36-176"><a href="#cb36-176" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb36-122"><a href="#cb36-122" aria-hidden="true" tabindex="-1"></a>  <span class="co"># load metadata locally</span></span>
+<span id="cb36-123"><a href="#cb36-123" aria-hidden="true" tabindex="-1"></a>  var_data <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">paste0</span>(<span class="st">"data/data_"</span>, year, <span class="st">".rds"</span>))</span>
+<span id="cb36-124"><a href="#cb36-124" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb36-125"><a href="#cb36-125" aria-hidden="true" tabindex="-1"></a>  <span class="co"># convert numeric variables</span></span>
+<span id="cb36-126"><a href="#cb36-126" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (var <span class="cf">in</span> numeric_vars) {</span>
+<span id="cb36-127"><a href="#cb36-127" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (var <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"JWAP"</span>, <span class="st">"JWDP"</span>)) {</span>
+<span id="cb36-128"><a href="#cb36-128" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb36-129"><a href="#cb36-129" aria-hidden="true" tabindex="-1"></a>      <span class="co"># get time codes and their labels</span></span>
+<span id="cb36-130"><a href="#cb36-130" aria-hidden="true" tabindex="-1"></a>      time_values <span class="ot">&lt;-</span> <span class="fu">unlist</span>(</span>
+<span id="cb36-131"><a href="#cb36-131" aria-hidden="true" tabindex="-1"></a>        var_data[[var]]<span class="sc">$</span>values<span class="sc">$</span>item)</span>
+<span id="cb36-132"><a href="#cb36-132" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb36-133"><a href="#cb36-133" aria-hidden="true" tabindex="-1"></a>      <span class="co"># convert time codes to midpoint times</span></span>
+<span id="cb36-134"><a href="#cb36-134" aria-hidden="true" tabindex="-1"></a>      data[[var]] <span class="ot">&lt;-</span> <span class="fu">parse_time</span>(</span>
+<span id="cb36-135"><a href="#cb36-135" aria-hidden="true" tabindex="-1"></a>        data[[var]],</span>
+<span id="cb36-136"><a href="#cb36-136" aria-hidden="true" tabindex="-1"></a>        time_values</span>
+<span id="cb36-137"><a href="#cb36-137" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb36-138"><a href="#cb36-138" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb36-139"><a href="#cb36-139" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb36-140"><a href="#cb36-140" aria-hidden="true" tabindex="-1"></a>      <span class="co"># convert regular numeric variables to numeric</span></span>
+<span id="cb36-141"><a href="#cb36-141" aria-hidden="true" tabindex="-1"></a>      data[[var]] <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(data[[var]])</span>
+<span id="cb36-142"><a href="#cb36-142" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb36-143"><a href="#cb36-143" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb36-144"><a href="#cb36-144" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb36-145"><a href="#cb36-145" aria-hidden="true" tabindex="-1"></a>  <span class="co"># convert categorical variables to factors</span></span>
+<span id="cb36-146"><a href="#cb36-146" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (var <span class="cf">in</span> categorical_vars) {</span>
+<span id="cb36-147"><a href="#cb36-147" aria-hidden="true" tabindex="-1"></a>    value_labels <span class="ot">&lt;-</span> <span class="fu">unlist</span>(var_data[[var]]<span class="sc">$</span>values<span class="sc">$</span>item)</span>
+<span id="cb36-148"><a href="#cb36-148" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb36-149"><a href="#cb36-149" aria-hidden="true" tabindex="-1"></a>    data[[var]] <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
+<span id="cb36-150"><a href="#cb36-150" aria-hidden="true" tabindex="-1"></a>      data[[var]],</span>
+<span id="cb36-151"><a href="#cb36-151" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">names</span>(value_labels),</span>
+<span id="cb36-152"><a href="#cb36-152" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> value_labels</span>
+<span id="cb36-153"><a href="#cb36-153" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb36-154"><a href="#cb36-154" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb36-155"><a href="#cb36-155" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb36-156"><a href="#cb36-156" aria-hidden="true" tabindex="-1"></a>  <span class="co"># give the data the census class</span></span>
+<span id="cb36-157"><a href="#cb36-157" aria-hidden="true" tabindex="-1"></a>  <span class="fu">class</span>(data) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"census"</span>, <span class="fu">class</span>(data))</span>
+<span id="cb36-158"><a href="#cb36-158" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb36-159"><a href="#cb36-159" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data)</span>
+<span id="cb36-160"><a href="#cb36-160" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Because <code>JWAP</code> and <code>JWDP</code> are represented by coded five-minute intervals, I examined their data separately to understand how the codes correspond to actual times. I retrieved the metadata and saw that it provides the time intervals associated with each code. I used those with <code>parse_time()</code> to convert the values into the midpoint times. I then used <code>query_census()</code> to verify that returned variables’ values were converted to time values.</p>
 <div class="cell">
@@ -1478,7 +1462,7 @@ Levels: Male Female</code></pre>
 <span id="cb112-80"><a href="#cb112-80" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb112-81"><a href="#cb112-81" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>I tested <code>summary_census()</code> to show that the function can summarize different combinations of data while using <code>PWGTP</code> to account for the survey weights. I first tested the default arguments so the function automatically identify the appropriate numeric and categorical variables. I then specified individual variables and combination of variables. I also tested it to ensure year is evaluated as a categorical variable.</p>
+<p>I tested <code>summary.census()</code> to show that the function can summarize different combinations of data while using <code>PWGTP</code> to account for the survey weights. I first tested the default arguments so the function automatically identify the appropriate numeric and categorical variables. I then specified individual variables and combination of variables. I also tested it to ensure year is evaluated as a categorical variable.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test function</span></span>
 <span id="cb113-2"><a href="#cb113-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -1566,8 +1550,8 @@ $categorical$SEX
 <span id="cb119-16"><a href="#cb119-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(</span>
 <span id="cb119-17"><a href="#cb119-17" aria-hidden="true" tabindex="-1"></a>    object,</span>
 <span id="cb119-18"><a href="#cb119-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
-<span id="cb119-19"><a href="#cb119-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="fu">get</span>(categorical_var),</span>
-<span id="cb119-20"><a href="#cb119-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="fu">get</span>(numeric_var),</span>
+<span id="cb119-19"><a href="#cb119-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> .data[[categorical_var]],</span>
+<span id="cb119-20"><a href="#cb119-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> .data[[numeric_var]],</span>
 <span id="cb119-21"><a href="#cb119-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">weight =</span> PWGTP</span>
 <span id="cb119-22"><a href="#cb119-22" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb119-23"><a href="#cb119-23" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
@@ -1846,7 +1830,7 @@ $categorical$year
 </section>
 <section id="educational-attainment-and-sex" class="level2">
 <h2 class="anchored" data-anchor-id="educational-attainment-and-sex">Educational Attainment and Sex</h2>
-<p>Then I investigated whether educational attainment differs between males and females. I separated the data into male and female observations, then usedd my weighted <code>summary()</code> function to compare the educational attainment categories for the two groups.</p>
+<p>Then I investigated whether educational attainment differs between males and females. I separated the data into male and female observations, then used my weighted <code>summary()</code> function to compare the educational attainment categories for the two groups.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb132"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb132-1"><a href="#cb132-1" aria-hidden="true" tabindex="-1"></a><span class="co"># investigate education and sex</span></span>
 <span id="cb132-2"><a href="#cb132-2" aria-hidden="true" tabindex="-1"></a></span>

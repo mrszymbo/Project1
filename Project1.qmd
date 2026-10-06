@@ -18,7 +18,7 @@ execute:
 
 The goal of this project is to create reusable, generic functions for working with data from the U.S. Census Bureau's Public Use Microdata Sample (PUMS) API. The functions should be able to retrieve data from different survey years, variables, and geographic areas, and return the data consistently without manually repeating the same data-processing steps.  
 
-The PUMS API provides psuedo person-level records, but the records do not represent exactly one person but can represent multiple people. The `PWGTP` variable is a person weight, which indicates how many people a particular record represents. Because of this, the functions need to account for these weights. 
+The PUMS API provides pseudo person-level records, but the records do not represent exactly one person but can represent multiple people. The `PWGTP` variable is a person weight, which indicates how many people a particular record represents. Because of this, the functions need to account for these weights. 
 
 I focused on the PUMS data from 2021 through 2024, and excluded Puerto Rico as stated in the project instructions. My approach was to first understand how the Census API returned data, then create helper functions to process the metadata and special variables, and finally build and test functions that could retrieve, combine, summarize, and plot the data. 
 
@@ -204,7 +204,7 @@ var_ref
 
 ## Parsing API Data
 
-I then created helper functions for processing the returned data from the API. I created these helper functions as I was creating the main function (`query_census()`), but placed them before the main function. These helper functions were for two parts of the main function that required a little bit more work and therefore would keep the the main function looking neater. 
+I then created helper functions for processing the returned data from the API. I created these helper functions as I was creating the main function (`query_census()`), but placed them before the main function. These helper functions were for two parts of the main function that required a little bit more work and therefore would keep the main function looking neater. 
 
 ### Helper Functions
 
@@ -433,29 +433,16 @@ query_census <- function(
   # query API
   data <- query_api(url2)
   
+  # load metadata locally
+  var_data <- readRDS(paste0("data/data_", year, ".rds"))
+  
   # convert numeric variables
   for (var in numeric_vars) {
     if (var %in% c("JWAP", "JWDP")) {
       
-      # get metadata
-      time_url <- paste0(
-        "https://api.census.gov/data/",
-        year,
-        "/acs/acs1/pums/variables/",
-        var,
-        ".json"
-        )
-      
-      time_response <- GET(time_url)
-      
-      time_metadata <- fromJSON(
-        rawToChar(time_response$content)
-        )
-      
       # get time codes and their labels
       time_values <- unlist(
-        time_metadata$values$item
-      )
+        var_data[[var]]$values$item)
       
       # convert time codes to midpoint times
       data[[var]] <- parse_time(
@@ -468,9 +455,6 @@ query_census <- function(
       data[[var]] <- as.numeric(data[[var]])
     }
   }
-  
-  # load variable metadata
-  var_data <- readRDS(paste0("data/data_", year, ".rds"))
   
   # convert categorical variables to factors
   for (var in categorical_vars) {
@@ -879,7 +863,7 @@ summary.census <- function(
 }
 ```
 
-I tested `summary_census()` to show that the function can summarize different combinations of data while using `PWGTP` to account for the survey weights. I first tested the default arguments so the function automatically identify the appropriate numeric and categorical variables. I then specified individual variables and combination of variables. I also tested it to ensure year is evaluated as a categorical variable. 
+I tested `summary.census()` to show that the function can summarize different combinations of data while using `PWGTP` to account for the survey weights. I first tested the default arguments so the function automatically identify the appropriate numeric and categorical variables. I then specified individual variables and combination of variables. I also tested it to ensure year is evaluated as a categorical variable. 
 
 ```{r}
 # test function
@@ -924,8 +908,8 @@ plot.census <- function(
   ggplot(
     object,
     aes(
-      x = get(categorical_var),
-      y = get(numeric_var),
+      x = .data[[categorical_var]],
+      y = .data[[numeric_var]],
       weight = PWGTP
     )
   ) +
@@ -1043,7 +1027,7 @@ The boxplot shows that age distributions vary across the educational attainment 
 
 ## Educational Attainment and Sex
 
-Then I investigated whether educational attainment differs between males and females. I separated the data into male and female observations, then usedd my weighted `summary()` function to compare the educational attainment categories for the two groups.
+Then I investigated whether educational attainment differs between males and females. I separated the data into male and female observations, then used my weighted `summary()` function to compare the educational attainment categories for the two groups.
 
 ```{r}
 # investigate education and sex
