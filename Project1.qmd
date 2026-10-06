@@ -1099,3 +1099,4 @@ In North Carolina, the  weighted counts for bachelor's, master's, and doctorate 
 The weighted counts also showed differences between males and females across several educational attainment categories. Females had higher weighted counts for bachelor's and master's degrees. The age distributions of males and females were relatively similar, although females had a slightly higher median age.
 
 These results show associations in the data instead of relationships. Since the educational attainment comparisons were based on weighted counts, using percentages would provide a more direct way to compare the distributions across years and between males and females. 
+
