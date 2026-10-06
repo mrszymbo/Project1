@@ -8,9 +8,10 @@ format:
     toc-location: right
 editor: source
 execute:
-  error: false
+  error: true
   warning: false
   message: false
+  cache: true
 ---
 
 # Introduction
@@ -308,7 +309,7 @@ I created the main function, `query_census()`, with the purpose of making it eas
 The function allows the user to specify the survey year, numeric variables, categorical variables, a geographic level, and a specific geographic area. I included several input checks that provide error messages when invalid inputs are supplied. The function makes sure that the year is one of the four years included in this project, that the requested variables are allowed, that `PWGTP` is included, and that the geographic areas are valid. It also prevents Puerto Rico from being requested. 
 The function uses the metadata stored in the .rds files to identify geographic codes. This allows the user to enter a geographic name instead of having to know the Census code for that state. The user can also enter `all` to request all values at the selected geographic level.
 
-After retrieving the data from the embedded API query, the function converts the numeric variables to numeric values and categorical variables to factors using the labels stored in the metadata. The two time variables, `JWAP` and `JWDP, are processed using `parse_time()`. I also add the `census` class to the returned tibble so that the summary and plot functions can use the custom methods created later. 
+After retrieving the data from the embedded API query, the function converts the numeric variables to numeric values and categorical variables to factors using the labels stored in the metadata. The two time variables, `JWAP` and `JWDP`, are processed using `parse_time()`. I also add the `census` class to the returned tibble so that the summary and plot functions can use the custom methods created later. 
 
 ```{r}
 # create main parsing function 
@@ -498,8 +499,6 @@ url <- paste0(
 )
 
 response <- GET(url)
-
-fromJSON(rawToChar(response$content))
 
 jwap_metadata <- fromJSON(rawToChar(response$content))
 
