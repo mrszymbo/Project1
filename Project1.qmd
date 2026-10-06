@@ -8,18 +8,22 @@ format:
     toc-location: right
 editor: source
 execute:
-  error: true
+  error: false
   warning: false
   message: false
 ---
 
 # Introduction
 
-yada yada yada
+The goal of this project is to create reusable, generic functions for working with data from the U.S. Census Bureau's Public Use Microdata Sample (PUMS) API. The functions should be able to retrieve data from different survey years, variables, and geographic areas, and return the data consistently without manually repeating the same data-processing steps.  
+
+The PUMS API provides psuedo person-level records, but the records do not represent exactly one person but can represent multiple people. The `PWGTP` variable is a person weight, which indicates how many people a particular record represents. Because of this, the functions need to account for these weights. 
+
+I focused on the PUMS data from 2021 through 2024, and excluded Puerto Rico as stated in the project instructions. My approach was to first understand how the Census API returned data, then create helper functions to process the metadata and special variables, and finally build and test functions that could retrieve, combine, summarize, and plot the data. 
 
 # Part 1: Data Processing
 
-yada yada yada
+Part 1 of the project focuses on retrieving and processing the Census API's PUMS data.
 
 ```{r}
 # attach packages 
@@ -32,14 +36,18 @@ library(quantreg)
 
 ## Explore PUMS Census API
 
-yada yada yada
+I began by making a request to the 2024 Census PUMS API using the example provided in the project instructions. This let me see what the returned data from the Census API looked like. 
+
+Since the response was returned as a JSON, I converted it to an R object. The first row contained the variable names while the rest of the rows contained the observations. I separated the column names from the observations, and then converted the response to a tibble. 
+
+I then used those steps to create a helper function, `query_api`. This function takes an inputted URL, sends the request, converts the JSON response into an R object, uses the first row as the column names, and returns the reamining data as a tibble. By creating this helper, I made sure that I would not have to repeat the same API-response processing everytime I made a request. 
 
 ```{r}
 # establish API key
 
 api_key <- "9565ad3d32410ea2b7caa601ff9c5c4467f789d7"
 
-# try calling to API using example
+# try calling to API using example 
 
 url1 <- paste0(
   "https://api.census.gov/data/2024/acs/acs1/pums?",
@@ -93,16 +101,16 @@ query_api <- function(url) {
   return(data)
 }
 
-test <- query_api(url1)
+query_api_test <- query_api(url1)
 
-test
+query_api_test
 ```
-
-yada yada yada
 
 ## Parsing Variable Values
 
-yada yada yada
+The next step was to obtain and understand the metadata for the variables used in the project. The Census API provides a JSON file for the variables of each survey year, which contains various information about the variables. 
+
+I created a list of the PUMS variables required for the project, `PUMS_var`, and then created the `get_var()` function to retrieve the metadata. Since the Census API uses `ST` for state in 2021 and 2022 but `STATE` in 2023 and 2024, I had to account for that in the function so that `get_var()` could be used for all four years. 
 
 ```{r}
 # check 2024 PUMS variable data
@@ -155,7 +163,7 @@ test_2024 <- get_var(2024)
 names(test_2024)
 ```
 
-works! so do on 2021-2023 data as well + yada yada
+The function successfully returned the requested variables for 2024, so I repeated the process for 2021 through 2023. I saved the metadata for each survey year as an `.rds` file in the `data` folder. Saving the metadata locally will allow for other functions to use the same information.
 
 ```{r}
 data_2024 <- get_var(2024)
@@ -180,10 +188,12 @@ saveRDS(data_2021, "data/data_2021.rds")
 
 ### PUMS Variable Reference
 
+Since the Census variable names are abbreviations, I also created a reference table that showed the variables' names and descriptions. The descriptions come from the labels in the Census metadata. This will make the variables and results easier to interpret without having to repeatedly look up what each variable means. 
+
 ```{r}
 var_ref <- tibble(
-  variable = PUMS_var,
-  description = sapply(PUMS_var, function(x) {
+  Variable = PUMS_var,
+  Description = sapply(PUMS_var, function(x) {
     data_2024[[x]]$label
   })
 )
@@ -192,7 +202,11 @@ var_ref
 
 ## Parsing API Data
 
+I then created helper functions for processing the returned data from the API. I created these helper functions as I was creating the main function (`query_census()`), but placed them before the main function. These helper functions were for two parts of the main function that required a little bit more work and therefore would keep the the main function looking neater. 
+
 ### Helper Functions
+
+The first helper function I created was `get_geo()`, which would allow me to retrieve the appropriate geographic values from the metadata. It lets the main function accept a geographic name and determine the corresponding Census code. It also handles the difference between `ST` and `STATE` across the survey years and removes Puerto Rico as an acceptable value. 
 
 ```{r}
 # make helper function to return available geography 
@@ -244,6 +258,8 @@ get_geo(2023, "Region")
 get_geo(2022, "Division")
 ```
 
+The second helper function I created was `parse_time()`, which would process `JWAP` and  `JWDP`. These variables are provided as codes that represent five-minute time intervals. I converted the codes to their corresponding intervals, calculated the midpoint of each interval, and then returned the result as a time value. Missing time values are returned as `NA`. 
+
 ```{r}
 # make helper function that parses the time strings to return midpoint as time value
 
@@ -288,67 +304,18 @@ parse_time <- function(x, time_values) {
   
   return(midpoint)
 }
-
-```
-
-```{r}
-# JWAP metadata
-url <- paste0(
-  "https://api.census.gov/data/2024/acs/acs1/pums/variables/JWAP.json"
-)
-
-response <- GET(url)
-
-fromJSON(rawToChar(response$content))
-
-jwap_metadata <- fromJSON(rawToChar(response$content))
-
-jwap_values <- unlist(jwap_metadata$values$item)
-
-head(jwap_values)
-
-arrive_test <- query_census(
-  numeric_vars = c("JWAP", "PWGTP"),
-  api_key = api_key
-)
-head(arrive_test$JWAP)
-
-jwap_time <- parse_time(
-  arrive_test$JWAP,
-  jwap_values
-)
-head(jwap_time)
-```
-
-```{r}
-# JWDP metadata 
-
-url <- paste0(
-  "https://api.census.gov/data/2024/acs/acs1/pums/variables/JWDP.json"
-)
-
-response_jwdp <- GET(url)
-
-jwdp_metadata <- fromJSON(rawToChar(response_jwdp$content))
-
-jwdp_values <- unlist(jwdp_metadata$values$item)
-
-head(jwdp_values)
-
-depart_test <- query_census(
-  numeric_vars = c("JWDP", "PWGTP"),
-  api_key = api_key
-)
-
-jwdp_time <- parse_time(
-  depart_test$JWDP,
-  jwdp_values
-)
-
-head(jwdp_time)
 ```
 
 ### Main Function
+
+I created the main function, `query_census()`, with the purpose of making it easier to request PUMS data from the API while also handling validation and data processing automatically. 
+
+The function allows the user to specify the survey year, numeric variables, categorical variables, a geographic level, and a specific geographic area. I included several input checks that provided error messages when invalid inputs are supplied. The function makes sure that the year is one of the four years included in this project, that the requested variables are allowed, that `PWGTP` is included, and that the geographic areas are valid. It also prevents Puerto Rico from being requested. 
+
+The function uses the metadata stored in the .rds files to identify geographic codes. This allows the user to enter a geographic name instead of having to know the Census code for that state. The user can also enter `all` to request all values at the selected geographic level.
+
+After retrieving the data from the embedded API query, the function converts the numeric variables to numeric values and categorical variables to factors using the labels stored in the metadata. The two times variables, `JWAP` and `JWDP, are processed using `parse_time()`. I also add the `census` class to the returned tibble so that the summary and plot functions can use the custom methods created later. 
+
 ```{r}
 # create main parsing function 
 
@@ -399,8 +366,8 @@ query_census <- function(
     stop("At least one categorical variable must be included.")
   }
   
-  # specify geography levels that can be returned 
-  allowed_geo <- c("Region", "Division", "State")
+  # specify geography levels that can be returned
+  allowed_geo <- c("State", "Region", "Division")
   
   # make sure only one level can be returned 
   if (length(geography) != 1 || !geography %in% allowed_geo) {
@@ -479,11 +446,11 @@ query_census <- function(
       # get metadata
       time_url <- paste0(
         "https://api.census.gov/data/",
-      year,
-      "/acs/acs1/pums/variables/",
-      var,
-      ".json"
-      )
+        year,
+        "/acs/acs1/pums/variables/",
+        var,
+        ".json"
+        )
       
       time_response <- GET(time_url)
       
@@ -528,7 +495,75 @@ query_census <- function(
 }
 ```
 
+yada yada
+
+```{r}
+# JWAP metadata
+url <- paste0(
+  "https://api.census.gov/data/2024/acs/acs1/pums/variables/JWAP.json"
+)
+
+response <- GET(url)
+
+fromJSON(rawToChar(response$content))
+
+jwap_metadata <- fromJSON(rawToChar(response$content))
+
+jwap_values <- unlist(jwap_metadata$values$item)
+
+head(jwap_values)
+
+arrive_test <- query_census(
+  numeric_vars = c("JWAP", "PWGTP"),
+  api_key = api_key
+)
+head(arrive_test$JWAP)
+
+jwap_time <- parse_time(
+  arrive_test$JWAP,
+  jwap_values
+)
+head(jwap_time)
+```
+
+```{r}
+# JWDP metadata 
+
+url <- paste0(
+  "https://api.census.gov/data/2024/acs/acs1/pums/variables/JWDP.json"
+)
+
+response_jwdp <- GET(url)
+
+jwdp_metadata <- fromJSON(rawToChar(response_jwdp$content))
+
+jwdp_values <- unlist(jwdp_metadata$values$item)
+
+head(jwdp_values)
+
+depart_test <- query_census(
+  numeric_vars = c("JWDP", "PWGTP"),
+  api_key = api_key
+)
+
+jwdp_time <- parse_time(
+  depart_test$JWDP,
+  jwdp_values
+)
+
+head(jwdp_time)
+```
+
+yada yada
+
 ### Function Tests
+
+I tested `query_census()` using both valid and invalid inputs. The tests include different years, numeric and categorical variables, geographic levels, specific geographic areas, and special time variables. I also tested the default arguments. 
+
+For the invalid tests, I used years, variables, and geographic values that would not be allowed to be requested. This showed that the function not only works successfully, but also provides an error when the user provides an invalid argument.
+
+I also checked the classes and factor levels of the returned variables to make sure that the categorical variables are factors, the time variables are stored as time values, and that the overall tibble had the `census` class. 
+
 ```{r}
 # test years
 
@@ -611,7 +646,7 @@ test_geo2 <- query_census(
   )
 head(test_geo2)
 
-# invalid geography
+# invalid
 query_census(
   geography = "All",
   api_key = api_key
@@ -660,9 +695,11 @@ levels(gen_test$SEX)
 head(gen_test$SEX)
 ```
 
-yada yada yada
-
 ## Combining Years
+
+I then created `query_census_years()` so that multiple survey years could be retrieved and combined within one call, instead of just a single year being retrieved. The function calls `query_census()` once for every requested year and combines the resulting tibbles; this is so I did not have to rewrite the API query for each year. 
+
+I also added a `year` variable to each year's data before combining them so that the same variables could be compared across multiple survey years. The resulting combined tibble retains the "census" class as well so that it can be passed directly to the custom summary and plotting functions later. 
 
 ```{r}
 # create function to specify multiple years of survey data
@@ -707,10 +744,16 @@ query_census_years <- function(
   # combine all years into one tibble
   data <- bind_rows(data_list)
   
+  # give census class
+  class(data) <- c("census", class(data))
+  
   return(data)
 }
 ```
 
+I then tested the function with different combinations of years and variables. I also tests the `all` option to retrieve data from all states. 
+
+These tests showed that the function works properly and can be reused with different inputs. 
 ```{r}
 # test function
 
@@ -748,6 +791,15 @@ table(combined_all_states$year)
 ```
 
 # Part 2: Writing a Generic Function for Summarizing
+
+Part 2 of the project focuses on creating numerical and graphical summary functions using the `census` class.  
+
+### Numeric Summary: Weighted Summary Function
+
+Because `PWGTP` represents the number of people represented by each record, a regular mean would give every row the same influence, even though different rows can represent different numbers of people. Therefore, I created a summary function that would calculate weighted summaries, `summary.census()`. 
+
+For numeric variables, the function calculates a weighted mean and weighted standard deviation using the person weights. For categorical variables, it calculates weighted counts for each category, also using person weights. `year` is treated as categorical when multiple years are requested, since I want to compare the distribution of observations across survey years. 
+The function lets users specify which numeric and categorical variables to summarize, while excluding the person weight, `PWGTP`, and the time variables, `JWAP` and `JWDP` since they are time values. 
 
 ```{r}
 # create a function that 
@@ -835,6 +887,8 @@ summary.census <- function(
 }
 ```
 
+I tested `summary_census()` to show that the function can summarize different combinations of data while using `PWGTP` to account for the survey weights. I first tested the default arguments so the function automatically identify the appropriate numeric and categorical variables. I then specified individual variables and combination of variables. I also tested it to ensure year is evaluated as a categorical variable. 
+
 ```{r}
 # test function
 
@@ -852,6 +906,12 @@ summary(
   categorical_vars = "SEX"
 )
 ```
+
+### Graphical Summary: Plotting Function
+
+I then created `plot_census()` to produce weighted boxplots for the returned Census data. It requires the user to specify a categorical variable and a numeric variable, and uses `PWGTP` as the weight so the plot accounts for the fact that each PUMS record may represent multiple people. 
+
+I also made sure `year` is treated as a categorical variable when used for the x-axis, so the boxplots show separate distributions for each survey year. 
 
 ```{r}
 # create a generic plot() function that 
@@ -883,15 +943,15 @@ plot.census <- function(
       y = numeric_var,
       title = paste(numeric_var, "by", categorical_var)
     ) +
-    theme_minimal() +
+    theme_bw() +
     theme(
       plot.title = element_text(face = "bold", size = 14),
-      plot.subtitle = element_text(size = 10),
-      axis.title = element_text(face = "bold"),
-      panel.grid.minor = element_blank()
+      axis.title = element_text(face = "bold")
     )
 }
 ```
+
+I tested `plot.census()` using different categorical and numeric variables. The first example compares age across sex, while the second compares age across survey years. By using different inputs, the function shows that it can be reused with different combinations of variables. 
 
 ```{r}
 # test plot function
@@ -909,3 +969,4 @@ plot(
 )
 ```
 
+# Investigation
