@@ -38,9 +38,9 @@ library(quantreg)
 
 I began by making a request to the 2024 Census PUMS API using the example provided in the project instructions. This let me see what the returned data from the Census API looked like. 
 
-Since the response was returned as a JSON, I converted it to an R object. The first row contained the variable names while the rest of the rows contained the observations. I separated the column names from the observations, and then converted the response to a tibble. 
+Since the response was returned as a JSON, I converted it to an R object. The first row contained the variable names, so I saved that row as `column_names` before removing it from the data. I then converted the response to a tibble and assigned `column_names` to the tibble with `names()`. 
 
-I then used those steps to create a helper function, `query_api`. This function takes an inputted URL, sends the request, converts the JSON response into an R object, uses the first row as the column names, and returns the reamining data as a tibble. By creating this helper, I made sure that I would not have to repeat the same API-response processing everytime I made a request. 
+I then used those steps to create a helper function, `query_api`. This function takes an inputted URL, sends the request, converts the JSON response into an R object, uses the first row as the column names, and returns the remaining data as a tibble. By creating this helper, I made sure that I would not have to repeat the same API-response processing everytime I made a request. 
 
 ```{r}
 # establish API key
@@ -145,9 +145,10 @@ get_var <- function(year) {
   
   data <- fromJSON(rawToChar(response$content))
   
-  # keep requested variables
+  # use ST for 2021 and 2022
+  # use STATE for 2023 and 2024
   var <- PUMS_var
-  if (year == 2021 | year == 2022) {
+  if (year %in% c(2021, 2022)) {
     var <- c(var, "ST")
   } else {
     var <- c(var, "STATE")
@@ -206,20 +207,10 @@ I then created helper functions for processing the returned data from the API. I
 
 ### Helper Functions
 
-The first helper function I created was `get_geo()`, which would allow me to retrieve the appropriate geographic values from the metadata. It lets the main function accept a geographic name and determine the corresponding Census code. It also handles the difference between `ST` and `STATE` across the survey years and removes Puerto Rico as an acceptable value. 
+The first helper function I created was `get_geo()`, which would allow me to retrieve the appropriate geographic values from the metadata. It lets the main function accept a geographic name and determine the corresponding Census code. It also handles the difference between `ST` and `STATE` across the survey years and removes Puerto Rico as an acceptable value with `!grepl()`. Since `grepl()`  returns `TRUE` when the text is found and `FALSE` when it is not, and I wanted to exclude Puerto Rico from the data, I put `!` before `grepl()` to reverse the results. 
 
 ```{r}
 # make helper function to return available geography 
-
-# inspect for specific_geography
-data_2024$STATE$values
-data_2024$REGION$values
-data_2024$DIVISION$values
-
-state_values <- data_2024$STATE$values$item
-state_values
-names(state_values)
-unlist(state_values) # turn nested list into a simplified list
 
 get_geo <- function(year, geography) {
   
@@ -245,7 +236,7 @@ get_geo <- function(year, geography) {
   # return geography codes and names
   geo_val <- unlist(geo_data$values$item)
   
-  # remove Puerto Rico using `!grepl` which means "does not contain"
+  # remove Puerto Rico 
   geo_val <- geo_val[!grepl("Puerto Rico", geo_val)
                      ]
   
@@ -258,20 +249,24 @@ get_geo(2023, "Region")
 get_geo(2022, "Division")
 ```
 
-The second helper function I created was `parse_time()`, which would process `JWAP` and  `JWDP`. These variables are provided as codes that represent five-minute time intervals. I converted the codes to their corresponding intervals, calculated the midpoint of each interval, and then returned the result as a time value. Missing time values are returned as `NA`. 
+The second helper function I created was `parse_time()`, which processes `JWAP` and  `JWDP`. I had to use AI/LLMs to help figure this part out.  
+
+I first converted the codes to character values so they could be matched to the names in the metadata. The code `"0"` represents a missing value, so I changed those values to return as `NA`. I then used `sprintf()` to add leading zeroes to the codes so that they matched the three-digit codes used in the metadata. 
+
+Then I used the codes to look up the corresponding time intervals. `sub()` separates the beginning and ending times of each interval. I converted those strings into time values with `strptime()`, then calculated the midpoint by adding half of the difference between the ending and beginning times to the starting time. I then used `hms::as_hms()` to keep only the time of day, so that the returned value represents the approximate midpoint of the five-minute interval rather than the original Census code. 
 
 ```{r}
 # make helper function that parses the time strings to return midpoint as time value
 
 parse_time <- function(x, time_values) {
   
-  # convert values to character to match metadata names
+  # convert codes to character 
   x <- as.character(x)
   
-  # return missing time values as NA
+  # return missing time values ("0") as NA
   x[x == "0"] <- NA
   
-  # add leading 0's so codes match Census metadata
+  # add leading 0's so codes match metadata
   x <- ifelse(
     is.na(x), 
     NA, 
@@ -279,10 +274,10 @@ parse_time <- function(x, time_values) {
             )
     )
   
-  # get time interval for each code
+  # find time interval for each code
   intervals <- unname(time_values[x])
   
-  # extract beginning and ending times
+  # get beginning and ending times
   start <- sub(" to .*", "", intervals)
   end <- sub(".* to ", "", intervals)
   
@@ -292,7 +287,7 @@ parse_time <- function(x, time_values) {
   end <- gsub("a\\.m\\.", "AM", end)
   end <- gsub("p\\.m\\.", "PM", end)
   
-  # convert times to POSIXct
+  # convert into time values
   start_time <- strptime(start, format = "%I:%M %p")
   end_time <- strptime(end, format = "%I:%M %p")
   
@@ -310,11 +305,10 @@ parse_time <- function(x, time_values) {
 
 I created the main function, `query_census()`, with the purpose of making it easier to request PUMS data from the API while also handling validation and data processing automatically. 
 
-The function allows the user to specify the survey year, numeric variables, categorical variables, a geographic level, and a specific geographic area. I included several input checks that provided error messages when invalid inputs are supplied. The function makes sure that the year is one of the four years included in this project, that the requested variables are allowed, that `PWGTP` is included, and that the geographic areas are valid. It also prevents Puerto Rico from being requested. 
-
+The function allows the user to specify the survey year, numeric variables, categorical variables, a geographic level, and a specific geographic area. I included several input checks that provide error messages when invalid inputs are supplied. The function makes sure that the year is one of the four years included in this project, that the requested variables are allowed, that `PWGTP` is included, and that the geographic areas are valid. It also prevents Puerto Rico from being requested. 
 The function uses the metadata stored in the .rds files to identify geographic codes. This allows the user to enter a geographic name instead of having to know the Census code for that state. The user can also enter `all` to request all values at the selected geographic level.
 
-After retrieving the data from the embedded API query, the function converts the numeric variables to numeric values and categorical variables to factors using the labels stored in the metadata. The two times variables, `JWAP` and `JWDP, are processed using `parse_time()`. I also add the `census` class to the returned tibble so that the summary and plot functions can use the custom methods created later. 
+After retrieving the data from the embedded API query, the function converts the numeric variables to numeric values and categorical variables to factors using the labels stored in the metadata. The two time variables, `JWAP` and `JWDP, are processed using `parse_time()`. I also add the `census` class to the returned tibble so that the summary and plot functions can use the custom methods created later. 
 
 ```{r}
 # create main parsing function 
@@ -371,7 +365,7 @@ query_census <- function(
   
   # make sure only one level can be returned 
   if (length(geography) != 1 || !geography %in% allowed_geo) {
-    stop("geography must be either Region, Division, or State.")
+    stop("geography must be either State, Region, or Division.")
   }
   
   # specify the available geography that can be subset 
@@ -391,13 +385,12 @@ query_census <- function(
   if (specific_geography == "all") {
     geo_code <- NULL
   } else {
-    geo_code <- names(
-    geo_values[grepl(
+    match <- grepl(
       specific_geography,
       geo_values,
       fixed = TRUE
-    )]
-  )
+    )
+    geo_code <- names(geo_values)[match]
   }
   
   # make sure valid specific geography is returned 
@@ -458,11 +451,12 @@ query_census <- function(
         rawToChar(time_response$content)
         )
       
+      # get time codes and their labels
       time_values <- unlist(
         time_metadata$values$item
       )
       
-      # convert Census time codes to midpoint times
+      # convert time codes to midpoint times
       data[[var]] <- parse_time(
         data[[var]],
         time_values
@@ -479,12 +473,12 @@ query_census <- function(
   
   # convert categorical variables to factors
   for (var in categorical_vars) {
-    levels <- unlist(var_data[[var]]$values$item)
+    value_labels <- unlist(var_data[[var]]$values$item)
     
     data[[var]] <- factor(
       data[[var]],
-      levels = names(levels),
-      labels = levels
+      levels = names(value_labels),
+      labels = value_labels
     )
   }
   
@@ -495,7 +489,7 @@ query_census <- function(
 }
 ```
 
-yada yada
+Because `JWAP` and `JWDP` are represented by coded five-minute intervals, I examined their data separately to understand how the codes correspond to actual times. I retrieved the metadata and saw that it provides the time intervals associated with each code. I used those with `parse_time()` to convert the values into the midpoint times. I then used `query_census()` to verify that returned variables' values were converted to time values. 
 
 ```{r}
 # JWAP metadata
@@ -553,8 +547,6 @@ jwdp_time <- parse_time(
 
 head(jwdp_time)
 ```
-
-yada yada
 
 ### Function Tests
 
@@ -697,9 +689,9 @@ head(gen_test$SEX)
 
 ## Combining Years
 
-I then created `query_census_years()` so that multiple survey years could be retrieved and combined within one call, instead of just a single year being retrieved. The function calls `query_census()` once for every requested year and combines the resulting tibbles; this is so I did not have to rewrite the API query for each year. 
+I then created `query_census_years()` so that multiple survey years could be retrieved and combined within one call, instead of just a single year being retrieved. The function calls `query_census()` once for every requested year and combines the resulting tibbles using `bind_rows()`; this is so I did not have to rewrite the API query for each year. 
 
-I also added a `year` variable to each year's data before combining them so that the same variables could be compared across multiple survey years. The resulting combined tibble retains the "census" class as well so that it can be passed directly to the custom summary and plotting functions later. 
+I also added a `year` variable to each year's data before combining them so that the same variables could be compared across multiple survey years. I gave the combined data the `census` class so that R knows to use my custom summary and plot functions later. 
 
 ```{r}
 # create function to specify multiple years of survey data
@@ -727,9 +719,9 @@ query_census_years <- function(
   data_list <- list()
 
   # query each year
-  for (i in seq_along(years)) {
-    data_list[[i]] <- query_census(
-      year = years[i],
+  for (year in years) {
+    data <- query_census(
+      year = year,
       numeric_vars = numeric_vars,
       categorical_vars = categorical_vars,
       geography = geography,
@@ -738,7 +730,9 @@ query_census_years <- function(
     )
     
     # add year variable
-    data_list[[i]]$year <- years[i]
+    data$year <- year
+    
+    data_list[[as.character(year)]] <- data
   }
   
   # combine all years into one tibble
@@ -798,7 +792,8 @@ Part 2 of the project focuses on creating numerical and graphical summary functi
 
 Because `PWGTP` represents the number of people represented by each record, a regular mean would give every row the same influence, even though different rows can represent different numbers of people. Therefore, I created a summary function that would calculate weighted summaries, `summary.census()`. 
 
-For numeric variables, the function calculates a weighted mean and weighted standard deviation using the person weights. For categorical variables, it calculates weighted counts for each category, also using person weights. `year` is treated as categorical when multiple years are requested, since I want to compare the distribution of observations across survey years. 
+For numeric variables, the function calculates a weighted mean and weighted standard deviation using the person weights. I created `keep` to make sure missing values did not affect the calculations. For categorical variables, it calculates weighted counts for each category, also using person weights. `year` is treated as categorical when multiple years are requested, since I want to compare the distribution of observations across survey years.
+
 The function lets users specify which numeric and categorical variables to summarize, while excluding the person weight, `PWGTP`, and the time variables, `JWAP` and `JWDP` since they are time values. 
 
 ```{r}
@@ -869,6 +864,7 @@ summary.census <- function(
   for (var in categorical_vars) {
     x <- object[[var]]
     
+    # add person weights within each category
     categorical_summary[[var]] <- tapply(
       object$PWGTP,
       x,
@@ -970,3 +966,137 @@ plot(
 ```
 
 # Investigation
+
+For my investigation, I wanted to examine educational attainment in North Carolina from  2021 to 2024. I was interested in how educational attainment is associated with age and whether the distribution differs between males and females. 
+
+## Educational Attainment Across Survey Years
+
+I began by retrieving the data using my `query_census_years()` function. 
+
+```{r}
+# get data
+
+nc_edu <- query_census_years(
+  years = c(2021, 2022, 2023, 2024),
+  numeric_vars = c("AGEP", "PWGTP"),
+  categorical_vars = c("SCHL", "SEX"),
+  geography = "State",
+  specific_geography = "North Carolina",
+  api_key = api_key
+)
+
+head(nc_edu)
+table(nc_edu$year)
+```
+
+I used my `summary()` method to examine educational attainment separately for the 2021 and 2024 survey years. 
+
+```{r}
+# investigate educational attainment across years 
+
+summary(
+  nc_edu[nc_edu$year == 2021, ],
+  numeric_vars = "AGEP",
+  categorical_vars = c("SCHL", "year")
+)
+
+summary(
+  nc_edu[nc_edu$year == 2024, ],
+  numeric_vars = "AGEP",
+  categorical_vars = c("SCHL", "year")
+)
+```
+
+The weighted results show some changes in educational attainment across the four years. The weighted number of people with a bachelor's degree increased from about 1.69 million in 2021 to 1.88 million in 2024. The weighted number with a master's degree also increased, from about 713,000 in 2021 to 840,000 in 2024. The weighted number with a doctorate degree increased from about 112,00 to 142,000. 
+
+## Educational Attainment and Age
+
+Next, I examined the relationship betwen educational attainment and age. While I used my `plot.census()` function to create a weighted boxplot of age for each educational attainment category, the large number of `SCHL` categories made the plot difficult to read. Instead, I used a horizontal weighted boxplot to compare the age distributions within each educational attainment category. The Census data contains many educational attainment categories, so placing the categories on the y-axis made the longer category names easier to read and compare.  
+
+```{r}
+# investigate education and age
+
+plot(
+  nc_edu,
+  categorical_var = "SCHL",
+  numeric_var = "AGEP"
+)
+
+ggplot(
+  nc_edu,
+  aes(
+    y = SCHL,
+    x = AGEP,
+    weight = PWGTP
+  )
+) +
+  geom_boxplot() +
+  labs(
+    y = "Educational Attainment",
+    x = "Age",
+    title = "Age by Educational Attainment"
+  ) +
+  theme_bw() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    axis.title = element_text(face = "bold")
+  )
+```
+
+The boxplot shows that age distributions vary across the educational attainment categories. The median ages for several of the college and graduate-level categories are around the mid-40s to early 50s. The plot also shows that several categories have a wide range of ages, indicating that people within the same educational attainment category can vary considerably in age.
+
+## Educational Attainment and Sex
+
+Then I investigated whether educational attainment differs between males and females. I separated the data into male and female observations, then usedd my weighted `summary()` function to compare the educational attainment categories for the two groups.
+
+```{r}
+# investigate education and sex
+
+male_data <- nc_edu[
+  nc_edu$SEX == "Male",
+]
+
+female_data <- nc_edu[
+  nc_edu$SEX == "Female",
+]
+
+summary(
+  male_data,
+  numeric_vars = "AGEP",
+  categorical_vars = "SCHL"
+)
+
+summary(
+  female_data,
+  numeric_vars = "AGEP",
+  categorical_vars = "SCHL"
+)
+```
+
+The weighted summaries show differences between males and females in multiple educational attainment categories. The weighted number of people with a bachelor's degree was about 3.30 million among males and 3.91 million among females. The difference was also noticeable for master's degrees, with about 1.26 million males and 1.79 million females.
+
+## Sex and Age
+
+Because age may also be related to educational attainment, I compared the age distributions of males and females.
+
+```{r}
+# compare age distributions by sex
+
+plot(
+  nc_edu,
+  categorical_var = "SEX",
+  numeric_var = "AGEP"
+)
+```
+
+The boxplot shows that the age distributions of males and females are similar, although females have a slightly higher median age. The median age for males is about 37 years and 40 years for females. 
+
+## Conclusion
+
+Overall, this investigation showed how my Census API PUMS functions can be used to examine questions. It also showed that some variables, such as `SCHL`, may require additional grouping before they can be easily interpreted.
+
+In North Carolina, the  weighted counts for bachelor's, master's, and doctorate degrees increased between 2021 and 2024. The boxplot comparing age and educational attainment showed that age distributions varied across education categories. However, because `SCHL` contains many categories, the comparison was somewhat difficult to interpret in detail. Grouping some of the educational attainment categories could make this comparison easier to understand. 
+
+The weighted counts also showed differences between males and females across several educational attainment categories. Females had higher weighted counts for bachelor's and master's degrees. The age distributions of males and females were relatively similar, although females had a slightly higher median age.
+
+These results show associations in the data instead of relationships. Since the educational attainment comparisons were based on weighted counts, using percentages would provide a more direct way to compare the distributions across years and between males and females. 
